@@ -1,1 +1,1 @@
-# COMP 370 Project
+# Client App
