@@ -25,6 +25,7 @@ RUN chown jenkins /jenkins_setup.sh
 RUN chmod +x /jenkins_setup.sh
 RUN apt-get update
 RUN apt-get install -y jq
+RUN curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
 
 USER jenkins
 
