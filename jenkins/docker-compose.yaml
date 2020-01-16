@@ -1,0 +1,25 @@
+version: '3'
+services:
+  jenkins:
+      build: .
+      restart: always   
+      env_file:
+          - jenkins.env
+          - sonarqube.env   
+      ports:
+          - "8080:8080" 
+      depends_on:
+        - sonar
+  sonar:
+      build: sonarqube/.   
+      env_file:
+          - sonarqube.env   
+      ports:
+          - "9000:9000" 
+      #volumes:
+         # - ./sonarqube/sonarqube_conf:/opt/sonarqube/conf   
+         # - ./sonarqube/sonarqube_logs:/opt/sonarqube/logs   
+         # - ./sonarqube/sonarqube_extensions:/opt/sonarqube/extensions   
+         # - ./sonarqube/sonarqube_data:/opt/sonarqube/data
+      # 0d1566783b4b68be43367db77b0f93a635770ef4
+        
