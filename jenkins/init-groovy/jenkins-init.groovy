@@ -109,8 +109,6 @@ store.addCredentials(domain, sonarqube_Credentials)
 jenkins.save()
 
 
-
-
 // Code below was derived from:
 // https://stackoverflow.com/questions/49794536/groovy-script-to-set-sonarqube-server-settings-in-jenkins-programatically
 

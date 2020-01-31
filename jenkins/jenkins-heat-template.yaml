@@ -1,0 +1,219 @@
+heat_template_version: 2014-10-16
+# Derived from work of Carl Janzen https://cisgitlab.ufv.ca/201901COMP351AB1s00/heat-templates
+description: HEAT template for a single node
+parameters:
+  image_name:
+    type: string
+    description: Image Name
+    default: "Ubuntu16.04_x86_64"
+
+  public_keys_url:
+    type: string
+    description: url of public keys to add to authorized_keys file (refreshes every 15 minutes)
+
+  deploy_public_key:
+    type: string
+    description: Public Key for Deploy keypair
+    
+  deploy_private_key:
+    type: string
+    description: Private Key for Deploy keypair
+    
+  public_net:
+    type: string
+    description: public network 
+    default: "ssh-proxy"    
+  
+  fixed_ip_address:
+    type: string
+    default: 10.99.0.10
+
+  private_net_cidr:
+    type: string
+    default: 10.99.0.0/20 
+
+  private_net_allocation_pool_start:
+    type: string
+    default: 10.99.1.1
+
+  private_net_allocation_pool_end:
+    type: string
+    default: 10.99.15.254
+
+  private_net_gateway_ip:
+    type: string
+    default: 10.99.0.1
+
+resources:
+  private_net:
+    type: OS::Neutron::Net 
+    properties:
+      name: 
+        list_join: ["_", [{ get_param: 'OS::stack_name'}, "Private_Network"]]
+
+  private_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name: 
+        list_join: ["_", [{ get_param: 'OS::stack_name'}, "Subnet"]]
+      network_id: { get_resource: private_net }
+      cidr: { get_param: private_net_cidr }
+      gateway_ip: { get_param: private_net_gateway_ip }
+      allocation_pools:
+       - start: { get_param: private_net_allocation_pool_start } 
+         end: { get_param: private_net_allocation_pool_end }
+
+  TinyBox_router:
+    type: OS::Neutron::Router
+    properties:
+      name: 'TinyBox Router'
+      external_gateway_info:
+        network: { get_param: public_net }
+
+  TinyBox_router_interaface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: TinyBox_router }
+      subnet_id: { get_resource: private_subnet }
+ 
+  port_jenkins_sonar:
+      type: OS::Neutron::Port
+      properties:
+        name: 'TinyBox - Jenkins/Sonar Port'
+        network_id: { get_resource: private_net }
+        fixed_ips: [{"subnet_id":{ get_resource: private_subnet}, "ip_address": 10.99.1.12}]
+ 
+
+  floating_jenkins_sonar:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: public_net }
+      port_id: { get_resource: port_jenkins_sonar}
+ 
+
+  jenkins_sonar:
+      type: OS::Nova::Server
+      properties:
+        name: 
+          list_join: ["_", [{ get_param: 'OS::stack_name'}, "Jenkins_Sonar"]]
+        config_drive: true 
+        image: { get_param: image_name }
+        flavor: m1.medium
+        networks:
+          - port: { get_resource: port_jenkins_sonar }
+        user_data_format: RAW
+        user_data:
+          str_replace:
+            template: |
+              #cloud-config
+
+              hostname: $STACK_NAME
+              manage_etc_hosts: true
+
+              groups:
+              - docker: [ubuntu]
+
+              users:
+              - default
+
+              write_files:
+              - owner: root:root
+                path: /etc/cron.d/refresh_keys
+                permissions: '0644'
+                content: |
+                  # refresh authorized keys every 15 minutes
+                  '*/15 * * * * root /usr/local/bin/refresh_keys.sh >/dev/null 2>&1'
+                  # this file requires a newline on the last line
+
+              - owner: root:root
+                path: /usr/local/bin/refresh_keys.sh
+                permissions: '0755'
+                content: |
+                  #!/usr/bin/env bash
+                  # exit if KEYS_URL is blank
+                  [ -z "$KEYS_URL" ] && exit 0
+
+                  # fetch new copy of public keys
+                  rm -f /tmp/fetched_keys || exit 1
+                  touch /tmp/fetched_keys || exit 1
+                  chmod 0600 /tmp/fetched_keys || exit 1
+
+                  for url in $KEYS_URL; do
+                    curl ${url} >> /tmp/fetched_keys
+                    echo >> /tmp/fetched_keys
+                  done
+                  echo $DEPLOY_PUBLIC_KEY >> /tmp/fetched_keys
+                  
+                  # update every authorized_keys file
+                  cd /home
+                  for fn in * ; do
+                  [ -e "${fn}/.ssh/authorized_keys" ] && {
+                      rm -f /tmp/$$authorized_keys
+                      touch /tmp/$$authorized_keys
+                      chmod 0600 /tmp/$$authorized_keys
+                      cat "${fn}/.ssh/authorized_keys" > /tmp/$$authorized_keys
+                      cat /tmp/fetched_keys >> /tmp/$$authorized_keys 
+                      sort -u /tmp/$$authorized_keys > "${fn}/.ssh/authorized_keys"
+                      rm -f /tmp/$$authorized_keys
+                  }
+                  done
+                  rm -f /tmp/fetched_keys
+                   
+                  #echo $DEPLOY_PRIVATE_KEY > "/home/ubuntu/.ssh/id_rsa"  
+                  echo $DEPLOY_PUBLIC_KEY > "/home/ubuntu/.ssh/id_rsa.pub" 
+                  echo "PUB_KEYS_HERE"
+                  cat "/home/ubuntu/.ssh/id_rsa.pub"
+                  #sed s/%/\n/g /home/ubuntu/.ssh/id_rsa > "/home/ubuntu/.ssh/id_rsa"   
+                  
+              - owner: root:root
+                path: /root/.ssh/id_rsa_temp 
+                content: "$DEPLOY_PRIVATE_KEY"
+                  
+              runcmd:
+              # set permissions in case write_files above created .ssh 
+
+              # fix formatting of the private key
+              - tr % '\n' < /root/.ssh/id_rsa_temp > /root/.ssh/id_rsa
+              - echo >> /root/.ssh/id_rsa
+              - cat /root/.ssh/id_rsa > /home/ubuntu/.ssh/id_rsa
+              #- chown ubuntu:ubuntu
+              - chmod 0600 /root/.ssh/id_rsa
+
+
+              # replace % with newlines to put private key in correct format 
+              - /usr/local/bin/refresh_keys.sh
+              - apt update
+              - apt install -y git
+              - apt install -y python3-django
+              - apt install -y whoami
+              - echo $DEPLOY_PRIVATE_KEY > /home/ubuntu/test.txt
+              # docker install from: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04
+              - sudo apt-get update
+              - sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+              - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+              - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+              - sudo apt install -y autossh
+              - sudo apt install -y docker.io
+              - curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+              - chmod +x /usr/local/bin/docker-compose
+              - systemctl start docker
+              - systemctl enable docker
+              - usermod -aG docker ubuntu
+              - cd /home/ubuntu
+              - ssh-keyscan -t rsa cisgitlab.ufv.ca >> /root/.ssh/known_hosts
+              - git clone git@cisgitlab.ufv.ca:arshsekhon/comp_370_project.git
+              - cd ./comp_370_project 
+              - cd ./jenkins
+              - ls
+              - sudo docker-compose up -d
+              # setup reverse SSH tunnel to allow connection at http://tanktrakr.com:9090
+              # ssh-keyscan -t rsa tanktrakr.com >> /root/.ssh/known_hosts
+              # sudo autossh -f -N -T -o StreamLocalBindUnlink=yes -R 9090:localhost:80 monradax@tanktrakr.com
+            params:
+              $STACK_NAME: {get_param: 'OS::stack_name'}
+              $KEYS_URL : {get_param: public_keys_url } 
+              $DEPLOY_PUBLIC_KEY: {get_param: deploy_public_key }
+              $DEPLOY_PRIVATE_KEY: {get_param: deploy_private_key }
+
+
+# Derived from work of Carl Janzen https://cisgitlab.ufv.ca/201901COMP351AB1s00/heat-templates
