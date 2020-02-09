@@ -10,13 +10,15 @@ services:
           - "8080:8080" 
       depends_on:
         - sonar
+      volumes:
+           - /var/run/docker.sock:/var/run/docker.sock:rw
+      privileged: true
   sonar:
       build: sonarqube/.   
       env_file:
           - sonarqube.env   
       ports:
           - "9000:9000" 
-      #volumes:
          # - ./sonarqube/sonarqube_conf:/opt/sonarqube/conf   
          # - ./sonarqube/sonarqube_logs:/opt/sonarqube/logs   
          # - ./sonarqube/sonarqube_extensions:/opt/sonarqube/extensions   
