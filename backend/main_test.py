@@ -1,24 +1,33 @@
-# Copyright 2018 Google Inc. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Dummy Flask unit test code obtained from https://medium.com/@Joachim8675309/jenkins-ci-pipeline-with-python-8bf1a0234ec3
+import unittest
+import main as app
 
-import main
+class TestHello(unittest.TestCase):
 
+    def setUp(self):
+        app.app.testing = True
+        self.app = app.app.test_client()
 
-def test_index():
-    main.app.testing = True
-    client = main.app.test_client()
+    def test_hello(self):
+        rv = self.app.get('/')
+        self.assertEqual(rv.status, '200 OK')
+        self.assertEqual(rv.data, b'Hello World!\n')
 
-    r = client.get('/')
-    assert r.status_code == 200
-    assert 'Hello World' in r.data.decode('utf-8')
+    def test_hello_hello(self):
+        rv = self.app.get('/hello/')
+        self.assertEqual(rv.status, '200 OK')
+        self.assertEqual(rv.data, b'Hello World!\n')
+
+    def test_hello_name(self):
+        name = 'Simon'
+        rv = self.app.get(f'/hello/{name}')
+        self.assertEqual(rv.status, '200 OK')
+        self.assertIn(bytearray(f"{name}", 'utf-8'), rv.data)
+
+if __name__ == '__main__':
+    ############# Add these lines #############
+    import xmlrunner
+    runner = xmlrunner.XMLTestRunner(output='test-reports')
+    unittest.main(testRunner=runner)
+    ###########################################
+    unittest.main()
