@@ -201,8 +201,7 @@ resources:
               - usermod -aG docker ubuntu
               - cd /home/ubuntu
               - ssh-keyscan -t rsa cisgitlab.ufv.ca >> /root/.ssh/known_hosts
-              - git clone git@cisgitlab.ufv.ca:arshsekhon/comp_370_project.git
-              - git checkout -b FEATURE-Node_Backend origin/FEATURE-Node_Backend
+              - git clone git@cisgitlab.ufv.ca:arshsekhon/comp_370_project.git 
               - cd ./comp_370_project 
               - cd ./jenkins
               - ls
