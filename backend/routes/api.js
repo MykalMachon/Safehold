@@ -3,10 +3,9 @@ const router = express.Router();
 
 const mapController = require('../controllers/mapController.js');
 
-/* GET test route. */
-router.get('/', mapController.testRoute);
+// * GET ROUTES
 
-/* POST echo route */
-router.post('/echo', mapController.echoRoute)
+// * POST ROUTES
+router.post('/echo', mapController.echoRoute);
 
 module.exports = router;

@@ -1,19 +1,13 @@
-exports.testRoute = (req, res) => {
-  try{
-    res.status(200).json({
-      message: 'this is the test route'
-    })
-  }catch(err){
-    res.status(500).json({error: err.message});
-  }
-}
-
 exports.echoRoute = (req, res) => {
-  try{
+  try {
+    const recievedMessage = req.body.message || req.query.message;
+    if (!recievedMessage) {
+      throw new Error('No Message Provided to Echo.');
+    }
     res.status(200).json({
-      message: req.body.message || req.query.message || null
-    })
-  }catch(err){
-    res.status(500).json({error: err.message});
+      message: recievedMessage,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-}
+};
