@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../app');
+const app = require('../app.js');
 
 describe('Misc Tests', () => {
   it('true should equal true', () => {
