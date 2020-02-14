@@ -6,6 +6,9 @@ RUN wget -P /opt/sonarqube/extensions/plugins/ https://dl.bintray.com/sonarsourc
 RUN wget -P /opt/sonarqube/extensions/plugins/ https://dl.bintray.com/sonarsource/SonarQube/org%2Fsonarsource%2Fjava%2Fsonar-java-plugin%2F6.0.1.20589%2Fsonar-java-plugin-6.0.1.20589.jar -O sonar-java-plugin-6.0.1.20589.jar
 RUN chown -R sonarqube /opt/sonarqube/extensions/plugins/
 
+RUN curl -sL https://deb.nodesource.com/setup_13.x | bash -
+RUN apt-get update
+RUN apt-get install nodejs -y
 
 ADD setup.sh /opt/sonarqube/setup.sh
 RUN chown sonarqube /opt/sonarqube/setup.sh
