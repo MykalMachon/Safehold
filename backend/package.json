@@ -10,7 +10,7 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "coverageDirectory": "./__tests__/coverage/jest/",
+    "coverageDirectory": "./coverage/jest/",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],

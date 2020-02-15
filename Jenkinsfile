@@ -77,9 +77,9 @@ pipeline {
                      -Dsonar.password=${SONAR_CREDS_PSW} \
                      -Dsonar.projectKey=${SONAR_BACKEND_PROJECT_TOKEN} \
                      -Dsonar.sources=./backend \
-                     -Dsonar.exclusions=**/__tests__/**,**/node_modules/**\
+                     -Dsonar.exclusions=**/__tests__/**,./backend/coverage/**,**/node_modules/**\
                      -Dsonar.coverage.exclusions=**/__tests__/** \
-                     -Dsonar.javascript.lcov.reportPaths=./backend/__tests__/coverage/jest/lcov.info \
+                     -Dsonar.javascript.lcov.reportPaths=./backend/coverage/jest/lcov.info \
                      """
                 }
             }
