@@ -10,7 +10,7 @@ pipeline {
    stages {
         stage('Checkout Code') {
              steps { 
-                git branch: 'FEATURE-Node_Backend', changelog: false, credentialsId: 'deployment-key', url: 'git@cisgitlab.ufv.ca:arshsekhon/comp_370_project.git'
+                git branch: 'master', changelog: false, credentialsId: 'deployment-key', url: 'git@cisgitlab.ufv.ca:arshsekhon/comp_370_project.git'
                 stash name: 'backend_stash'
              }
         }
@@ -50,6 +50,7 @@ pipeline {
               unstash 'backend_stash'
               sh '''cd ./backend/; 
                     npm run test-coverage;
+                    ls ./coverage
                     chmod -R 777 .;'''     
               stash name: 'backend_stash'
             }
@@ -77,7 +78,7 @@ pipeline {
                      -Dsonar.password=${SONAR_CREDS_PSW} \
                      -Dsonar.projectKey=${SONAR_BACKEND_PROJECT_TOKEN} \
                      -Dsonar.sources=./backend \
-                     -Dsonar.exclusions=**/__tests__/**,./backend/coverage/**,**/node_modules/**\
+                     -Dsonar.exclusions=**/__tests__/**,**/coverage/**,**/node_modules/**\
                      -Dsonar.coverage.exclusions=**/__tests__/** \
                      -Dsonar.javascript.lcov.reportPaths=./backend/coverage/jest/lcov.info \
                      """
