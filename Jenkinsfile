@@ -1,16 +1,17 @@
 //docker for build
 pipeline {
    agent any
+   
    environment {
      backend_folder = "./backend"
      SONAR_CREDS = credentials('sonarqube_credentials')
-     SONAR_BACKEND_PROJECT_TOKEN = "test"
+     SONAR_BACKEND_PROJECT_TOKEN_MASTER = "master_comp370_backend"
    }
 
    stages {
         stage('Checkout Code') {
              steps { 
-                git branch: 'master', changelog: false, credentialsId: 'deployment-key', url: 'git@cisgitlab.ufv.ca:arshsekhon/comp_370_project.git'
+                git branch: "${env.BRANCH_NAME}", changelog: false, credentialsId: 'deployment-key', url: 'git@cisgitlab.ufv.ca:arshsekhon/comp_370_project.git'
                 stash name: 'backend_stash'
              }
         }
@@ -70,6 +71,12 @@ pipeline {
          steps { 
              deleteDir()
              script{ 
+
+                 def sonar_project_token = ""
+                 if (env.BRANCH_NAME == 'master')
+                    sonar_project_token = env.SONAR_BACKEND_PROJECT_TOKEN_MASTER 
+                 else 
+                    sonar_project_token= env.BRANCH_NAME + "_comp370_backend";
                  unstash 'backend_stash' 
                  def scannerHome = tool 'sonarscanner';
                  withSonarQubeEnv('sonar') {
@@ -95,6 +102,18 @@ pipeline {
               }
             }
           }
+
+      stage('Deploy to Production') {
+          agent label:'master'
+          when {
+          expression {
+              return env.BRANCH_NAME == 'master';
+              }
+          }
+          steps {
+              echo 'Deployment to the Heroku bash goes here'
+          }
+      }
          
    }
    
