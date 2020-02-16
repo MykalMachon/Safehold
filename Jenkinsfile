@@ -83,7 +83,7 @@ pipeline {
                      sh """${scannerHome}/bin/sonar-scanner \
                      -Dsonar.login=${SONAR_CREDS_USR} \
                      -Dsonar.password=${SONAR_CREDS_PSW} \
-                     -Dsonar.projectKey=${SONAR_BACKEND_PROJECT_TOKEN} \
+                     -Dsonar.projectKey=${sonar_project_token} \
                      -Dsonar.sources=./backend \
                      -Dsonar.exclusions=**/__tests__/**,**/coverage/**,**/node_modules/**\
                      -Dsonar.coverage.exclusions=**/__tests__/** \
