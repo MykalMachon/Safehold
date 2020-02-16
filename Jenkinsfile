@@ -74,7 +74,7 @@ pipeline {
 
                  def sonar_project_token = ""
                  if (env.BRANCH_NAME == 'master')
-                    sonar_project_token = env.SONAR_BACKEND_PROJECT_TOKEN_MASTER 
+                    sonar_project_token = "${SONAR_BACKEND_PROJECT_TOKEN_MASTER}" 
                  else 
                     sonar_project_token= env.BRANCH_NAME + "_comp370_backend";
                  unstash 'backend_stash' 
