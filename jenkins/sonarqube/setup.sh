@@ -23,6 +23,8 @@ do
     PING=`isUp`
 done
 
+curlAdmin -X POST "$BASE_URL/api/webhooks/create?name=jenkins&url=http://jenkins:8080/sonarqube-webhook/" 
+
 # Create Project PR_Backend, master_backend, PR_Client and  master_Client
 if [ "$SONAR_BACKEND_PROJECT_NAME" ] && [ "$SONAR_BACKEND_PROJECT_KEY" ]; then
     curlAdmin -X POST "$BASE_URL/api/projects/create?name=master_$SONAR_BACKEND_PROJECT_NAME&key=master_$SONAR_BACKEND_PROJECT_KEY"
