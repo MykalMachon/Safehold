@@ -104,7 +104,7 @@ pipeline {
           }
 
       stage('Deploy to Production') {
-          agent {label:'master'}
+          agent any
           when {
           expression {
               return env.BRANCH_NAME == 'master';
