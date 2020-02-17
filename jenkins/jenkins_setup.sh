@@ -1,8 +1,6 @@
 #!/bin/bash 
 #
 # This file was derived from: https://github.com/linagora/docker-sonarqube-pr/blob/master/start_with_profile.sh
-ssh-keyscan cisgitlab.ufv.ca >  /var/jenkins_home/.ssh/known_hosts
-ssh-keyscan cisgitlab.ufv.ca >  /usr/share/jenkins/.ssh/known_hosts
 
 function curlAdmin {
     curl -u $SONAR_USER_LOGIN:$SONAR_USER_PASSWORD $@
