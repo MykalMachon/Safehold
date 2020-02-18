@@ -85,7 +85,7 @@ sonarSecretText = new StringCredentialsImpl(
 store.addCredentials(domain, sonarSecretText) 
 jenkins.save()
 
-def projectName = "COMP370_Backend_Build"
+def projectName = "COMP370_SafeHold_Build"
 def job = new File("/usr/share/jenkins/ref/init.groovy.d/backend_pipeline.xml").text
 
 def xmlBuffer = new StringBufferInputStream(job)
