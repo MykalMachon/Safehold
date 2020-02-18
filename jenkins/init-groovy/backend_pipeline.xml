@@ -42,7 +42,7 @@
           <traits>
             <jenkins.plugins.git.traits.BranchDiscoveryTrait/>
             <jenkins.scm.impl.trait.WildcardSCMHeadFilterTrait plugin="scm-api@2.6.3">
-              <includes>master PR-*</includes>
+              <includes>master PR-* FEATURE*</includes>
               <excludes></excludes>
             </jenkins.scm.impl.trait.WildcardSCMHeadFilterTrait>
           </traits>
