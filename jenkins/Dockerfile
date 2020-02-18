@@ -5,7 +5,7 @@ ENV CURL_OPTIONS -sSfLk -C -
 ENV JENKINS_UC_DOWNLOAD http://ftp-nyc.osuosl.org/pub/jenkins
 RUN JENKINS_UC_DOWNLOAD=http://ftp-nyc.osuosl.org/pub/jenkins
 
-RUN /usr/local/bin/install-plugins.sh git ssh github-branch-source sonar jdk-tool gradle ssh-slaves ssh-agent generic-webhook-trigger credentials-binding gitlab-plugin workflow-aggregator matrix-auth docker-workflow blueocean python
+RUN /usr/local/bin/install-plugins.sh git ssh github-branch-source sonar android-lint jdk-tool gradle ssh-slaves ssh-agent generic-webhook-trigger credentials-binding gitlab-plugin workflow-aggregator matrix-auth docker-workflow blueocean python
 # skip config 
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 
