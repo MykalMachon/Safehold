@@ -9,7 +9,7 @@ function curlAdmin {
     curl -v -u admin:admin $@
 }
 
-BASE_URL=http://sonar:9000
+BASE_URL=$SONAR_URL
 
 function isUp {
     curl -s -u admin:admin -f "$BASE_URL/api/system/info"

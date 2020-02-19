@@ -1,7 +1,8 @@
+def SONAR_URL= ""
 //docker for build
 pipeline {
-   agent any
-   
+   agent any 
+
    environment {
      backend_folder = "./backend"
      SONAR_CREDS = credentials('sonarqube_credentials')
@@ -13,6 +14,9 @@ pipeline {
              steps { 
                 git branch: "${env.BRANCH_NAME}", changelog: false, credentialsId: 'deployment-key', url: 'git@cisgitlab.ufv.ca:arshsekhon/comp_370_project.git'
                 stash name: 'repo_stash'
+                script{
+                    SONAR_URL = sh script:'echo -n $SONAR_URL', returnStdout: true 
+                } 
              }
         }
         
@@ -166,14 +170,14 @@ pipeline {
                         sonar_project_token = "${SONAR_BACKEND_PROJECT_TOKEN_MASTER}" 
                     else 
                         sonar_project_token= env.BRANCH_NAME + "_comp370_backend";
-                    sh ''' cd ./android;
+                    sh """ cd ./android;
                           ./gradlew :app:assembleDebug
                           ./gradlew :app:assembleDebugAndroidTest;
                           chmod -R 0777 ../*;
                           ./gradlew clean test codeCoverageReport sonarqube \
-                          -Dsonar.host.url=http://sonar:9000 \
+                          -Dsonar.host.url=${SONAR_URL} \
                           -Dsonar.projectKey=android-app \
-                          -Dsonar.projectName=android-app --info'''
+                          -Dsonar.projectName=android-app --info"""
                           
                 } 
                   archive 'app/build/outputs/**/*androidTest*.apk'

@@ -115,7 +115,7 @@ jenkins.save()
 
 // Required environment variables
 def sonar_name = "sonar"
-def sonar_server_url = "http://sonar:9000"
+def sonar_server_url = System.getenv('SONAR_URL')
 def sonar_auth_token = "sonar-token"
 def sonar_mojo_version = ''
 def sonar_additional_properties = ''

@@ -1,0 +1,9 @@
+version: '3'
+services:
+  sonar:
+      build: sonarqube/.   
+      env_file:
+          - sonarqube-deploy.env   
+      ports:
+          - "9000:9000" 
+        

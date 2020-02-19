@@ -6,7 +6,7 @@ function curlAdmin {
     curl -u $SONAR_USER_LOGIN:$SONAR_USER_PASSWORD $@
 }
 
-BASE_URL=http://sonar:9000
+BASE_URL=$SONAR_URL
 
 function isUp {
     curl -s -u $SONAR_USER_LOGIN:$SONAR_USER_PASSWORD -f "$BASE_URL/api/system/info"
