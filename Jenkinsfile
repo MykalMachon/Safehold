@@ -39,7 +39,12 @@ pipeline {
               stash name: 'repo_stash'
             }
             
-          } 
+          }
+          post {
+                  always {
+                      sh 'chmod -R 0777 *;'
+                  }
+              } 
         }
         stage('Backend: Run Tests') {
             
@@ -97,6 +102,11 @@ pipeline {
             }
              
          }
+         post {
+                  always {
+                      sh 'chmod -R 0777 *;'
+                  }
+              }
           
       }
       stage("Backend: Quality Gate") {
@@ -126,6 +136,11 @@ pipeline {
               archive '.android/app/build/outputs/**/app-debug.apk'
               //stash name: 'repo_stash'
           }
+          post {
+                  always {
+                      sh 'chmod -R 0777 *;'
+                  }
+              }
       }
       
       
@@ -178,6 +193,8 @@ pipeline {
                           -Dsonar.host.url=${SONAR_URL} \
                           -Dsonar.projectKey=android-app \
                           -Dsonar.projectName=android-app --info"""
+                    
+                  sh 'chmod -R 0777 *;'
                           
                 } 
                   archive 'app/build/outputs/**/*androidTest*.apk'
@@ -192,6 +209,12 @@ pipeline {
                   
                   
               }
+
+              post {
+                  always {
+                      sh 'chmod -R 0777 *;'
+                  }
+              }
               
           } 
       
@@ -202,15 +225,19 @@ pipeline {
                   sh 'ls -al .'
                   sh 'ls -al ./android/app/build'
                   junit testResults:'**/test-results/**/*.xml'   
-
                   unstash 'lint-reports'
                   step([$class: 'LintPublisher', canComputeNew: false, canRunOnFailed: true, defaultEncoding: '', healthy: '', pattern: '**/app/build/reports/lint-results*.xml', unHealthy: ''])
                     
+                  
               }
-              
+              post {
+                  always {
+                      sh 'chmod -R 0777 *;'
+                  }
+              }
           }
 
-      stage('Deploy to Production') {
+      stage('Backend: Deploy to Production') {
           agent any
           when {
           expression {
@@ -220,6 +247,11 @@ pipeline {
           steps {
               echo 'Deployment to the Heroku bash goes here'
           }
+          post {
+                  always {
+                      sh 'chmod -R 0777 *;'
+                  }
+              }
       }
          
    }
