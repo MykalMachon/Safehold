@@ -72,7 +72,7 @@ def deployKey = new BasicSSHUserPrivateKey(
 store.addCredentials(domain, deployKey)
 jenkins.save()
 
-def sonar_token = new File("/var/jenkins_home/sonar_token.txt").text
+def sonar_token = new File("/var/jenkins_home/sonar_token.txt").text.split("\n")[0]
 
 // inject sonar token
 sonarSecretText = new StringCredentialsImpl(
