@@ -181,10 +181,7 @@ pipeline {
                     stash includes: '**/jacoco/**', name: 'jacoco-coverage-reports'
                     
                     def sonar_android_project_token = ""
-                    if (env.BRANCH_NAME == 'master')
-                        sonar_android_project_token = "${SONAR_BACKEND_PROJECT_TOKEN_MASTER}" 
-                    else 
-                        sonar_android_project_token= env.BRANCH_NAME + "_safehold_android_app";
+                    sonar_android_project_token= env.BRANCH_NAME + "_safehold_android_app";
                     sh """ cd ./android;
                           ./gradlew :app:assembleDebug
                           ./gradlew :app:assembleDebugAndroidTest;
