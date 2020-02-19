@@ -6,7 +6,7 @@ pipeline {
    environment {
      backend_folder = "./backend"
      SONAR_CREDS = credentials('sonarqube_credentials')
-     SONAR_BACKEND_PROJECT_TOKEN_MASTER = "master_comp370_backend"
+     SONAR_BACKEND_PROJECT_TOKEN_MASTER = "master_safehold_backend"
    }
 
    stages {
@@ -85,7 +85,7 @@ pipeline {
                  if (env.BRANCH_NAME == 'master')
                     sonar_project_token = "${SONAR_BACKEND_PROJECT_TOKEN_MASTER}" 
                  else 
-                    sonar_project_token= env.BRANCH_NAME + "_comp370_backend";
+                    sonar_project_token= env.BRANCH_NAME + "_safehold_backend";
                  unstash 'repo_stash' 
                  def scannerHome = tool 'sonarscanner';
                  withSonarQubeEnv('sonar') {
@@ -180,19 +180,19 @@ pipeline {
                     stash includes: '**/test-results/**/*.xml', name: 'junit-reports'
                     stash includes: '**/jacoco/**', name: 'jacoco-coverage-reports'
                     
-                    def sonar_project_token = ""
+                    def sonar_android_project_token = ""
                     if (env.BRANCH_NAME == 'master')
-                        sonar_project_token = "${SONAR_BACKEND_PROJECT_TOKEN_MASTER}" 
+                        sonar_android_project_token = "${SONAR_BACKEND_PROJECT_TOKEN_MASTER}" 
                     else 
-                        sonar_project_token= env.BRANCH_NAME + "_comp370_backend";
+                        sonar_android_project_token= env.BRANCH_NAME + "_safehold_android_app";
                     sh """ cd ./android;
                           ./gradlew :app:assembleDebug
                           ./gradlew :app:assembleDebugAndroidTest;
                           chmod -R 0777 ../*;
                           ./gradlew clean test codeCoverageReport sonarqube \
                           -Dsonar.host.url=${SONAR_URL} \
-                          -Dsonar.projectKey=android-app \
-                          -Dsonar.projectName=android-app --info"""
+                          -Dsonar.projectKey=${sonar_android_project_token} \
+                          -Dsonar.projectName=${sonar_android_project_token} --info"""
                     
                   sh 'chmod -R 0777 *;'
                           
