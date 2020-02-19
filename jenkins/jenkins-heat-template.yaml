@@ -218,7 +218,7 @@ resources:
               - cd ./comp_370_project 
               - cd ./jenkins
               - ls
-              - sudo docker-compose up -d
+              - sudo docker-compose -f docker-compose-deploy-jenkins.yaml up -d
               # setup reverse SSH tunnel to allow connection at http://tanktrakr.com:9090
               # ssh-keyscan -t rsa tanktrakr.com >> /root/.ssh/known_hosts
               # sudo autossh -f -N -T -o StreamLocalBindUnlink=yes -R 9090:localhost:80 monradax@tanktrakr.com
@@ -341,7 +341,7 @@ resources:
               - cd ./comp_370_project 
               - cd ./jenkins
               - ls
-              - sudo docker-compose up -d
+              - sudo docker-compose -f docker-compose-deploy-sonar.yaml up -d
               # setup reverse SSH tunnel to allow connection at http://tanktrakr.com:9090
               # ssh-keyscan -t rsa tanktrakr.com >> /root/.ssh/known_hosts
               # sudo autossh -f -N -T -o StreamLocalBindUnlink=yes -R 9090:localhost:80 monradax@tanktrakr.com
