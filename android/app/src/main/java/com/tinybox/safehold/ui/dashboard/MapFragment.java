@@ -17,22 +17,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.tinybox.safehold.R;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-    private GoogleMap googleMap;
-    private MapView mapView;
-    private View view;
+    private GoogleMap mMap;
 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-       view = inflater.inflate(R.layout.fragment_map, container, false);
-       return view;
+       return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        MapView mapView;
 
         mapView = view.findViewById(R.id.map);
         if (mapView != null) {
@@ -44,12 +42,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        googleMap = googleMap;
+        mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(49.0527664556, -122.323465373);
-        googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Abbotsford"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Abbotsford"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
     }
 }
