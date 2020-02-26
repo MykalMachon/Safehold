@@ -17,39 +17,39 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.tinybox.safehold.R;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-    GoogleMap mMap;
-    MapView mMapView;
-    View mView;
+    private GoogleMap googleMap;
+    private MapView mapView;
+    private View view;
 
 
-
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-       mView = inflater.inflate(R.layout.fragment_map, container, false);
-       return mView;
+       view = inflater.inflate(R.layout.fragment_map, container, false);
+       return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mMapView = view.findViewById(R.id.map);
-        if (mMapView != null) {
-            mMapView.onCreate(null);
-            mMapView.onResume();
-            mMapView.getMapAsync(this);
+        mapView = view.findViewById(R.id.map);
+        if (mapView != null) {
+            mapView.onCreate(null);
+            mapView.onResume();
+            mapView.getMapAsync(this);
         }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        googleMap = googleMap;
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(49.0527664556, -122.323465373);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Abbotsford"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Abbotsford"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
     }
 }
