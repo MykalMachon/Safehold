@@ -4,24 +4,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tinybox.safehold.R;
 
-public class DashboardFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     GoogleMap mMap;
     MapView mMapView;
     View mView;
@@ -31,7 +26,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-       mView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+       mView = inflater.inflate(R.layout.fragment_map, container, false);
        return mView;
     }
 
@@ -52,8 +47,8 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        LatLng sydney = new LatLng(49.0527664556, -122.323465373);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Abbotsford"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
     }
