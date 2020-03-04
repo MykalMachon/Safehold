@@ -1,4 +1,4 @@
-package com.tinybox.safehold.ui.notifications;
+package com.tinybox.safehold.ui.account;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

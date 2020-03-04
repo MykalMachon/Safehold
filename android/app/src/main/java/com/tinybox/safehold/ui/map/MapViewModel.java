@@ -1,4 +1,4 @@
-package com.tinybox.safehold.ui.dashboard;
+package com.tinybox.safehold.ui.map;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

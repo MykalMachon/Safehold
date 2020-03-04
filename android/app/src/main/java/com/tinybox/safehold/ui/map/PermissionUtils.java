@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tinybox.safehold.ui.dashboard;
+package com.tinybox.safehold.ui.map;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -23,7 +23,6 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
