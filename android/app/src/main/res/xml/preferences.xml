@@ -31,8 +31,8 @@
         <SwitchPreference
             app:key="config_resend_alert"
             app:summary="Send alert every 1 minute with the latest location information."
-            app:title="Active Alerts"
-            app:icon="@drawable/ic_loop_white_24dp"
+            app:title="Live Tracking Alerts"
+            app:icon="@drawable/ic_my_location_white_24dp"
         />
     </PreferenceCategory>
 
