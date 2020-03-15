@@ -2,7 +2,7 @@
     <string name="app_name">SafeHold</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Map</string>
-    <string name="title_notifications">Account</string>
+    <string name="navigation_label_manage">Settings</string>
     <string name="hold_string">HOLD</string>
 
     <!--    Permissions    -->

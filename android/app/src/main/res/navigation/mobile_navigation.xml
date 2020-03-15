@@ -20,6 +20,6 @@
     <fragment
         android:id="@+id/navigation_account"
         android:name="com.tinybox.safehold.ui.account.Account"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_account" />
+        android:label="@string/navigation_label_manage"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
