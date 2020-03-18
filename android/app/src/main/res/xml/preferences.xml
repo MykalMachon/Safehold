@@ -2,9 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
-        app:key="user_profile_header"
-        app:layout="@layout/fragment_settings" />
+    <com.tinybox.safehold.ui.account.preferences.PreferencesHeader
+        app:key="user_profile_header"/>
     <PreferenceCategory
         app:key="contact_category"
         app:title="User Settings">
