@@ -20,14 +20,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             testCoverageEnabled true
         }
-        debug{
+        debug {
             testCoverageEnabled true
         }
     }
 }
 sonarqube {
     properties {
-        def libraries = project.android.sdkDirectory.getPath() + "/platforms/android-29/android.jar"/* + ", build/intermediates/exploded-aar*//**//*classes.jar"*/
+        def libraries = project.android.sdkDirectory.getPath() + "/platforms/android-29/android.jar"
+/* + ", build/intermediates/exploded-aar*//**//*classes.jar"*/
         property "sonar.sources", "src/main/java"
         property "sonar.binaries", "build/intermediates/app_classes/debug"
         property "sonar.libraries", libraries

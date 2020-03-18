@@ -1,21 +1,30 @@
 <PreferenceScreen
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <Preference
+        app:key="user_profile_header"
+        app:layout="@layout/fragment_settings" />
     <PreferenceCategory
         app:key="contact_category"
         app:title="User Settings">
 
-        <Preference
+        <EditTextPreference
             app:key="config_name"
             app:summary="Change your Name. This name would be sent as a part of the alert sent."
             app:title="Change Name"
+            app:defaultValue="SafeHold User"
             app:icon="@drawable/ic_person_white_24dp"/>
 
         <Preference
             app:key="config_contacts"
             app:summary="View and Edit the emergency Contact List."
             app:title="Emergency Contact List"
-            app:icon="@drawable/ic_people_white_24dp"/>
+            app:icon="@drawable/ic_people_white_24dp">
+            <intent
+                android:targetPackage="com.tinybox.safehold"
+                android:targetClass="com.tinybox.safehold.ui.account.preferences.EmergencyContacts"/>
+        </Preference>
 
     </PreferenceCategory>
 
@@ -32,8 +41,7 @@
             app:key="config_resend_alert"
             app:summary="Send alert every 1 minute with the latest location information."
             app:title="Live Tracking Alerts"
-            app:icon="@drawable/ic_my_location_white_24dp"
-        />
+            app:icon="@drawable/ic_my_location_white_24dp" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -51,6 +59,7 @@
             app:summary="Get information about the app and developers."
             app:title="About"
             app:icon="@drawable/ic_info_outline_white_24dp"/>
+        <Preference/>
 
     </PreferenceCategory>
 </PreferenceScreen>
