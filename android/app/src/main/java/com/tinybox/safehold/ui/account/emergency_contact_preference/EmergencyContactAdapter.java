@@ -60,8 +60,7 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
         public ImageView emergencyContactDeleteButton;
 
         public EmergencyContactHolder(@NonNull View itemView) {
-            super(itemView);
-            contactList = new ArrayList<>();
+            super(itemView); 
             emergencyContactName = itemView.findViewById(R.id.tvEmergencyContactName);
             emergencyContactPhoneNumber = itemView.findViewById(R.id.tvEmergencyContactPhoneNumber);
             emergencyContactImage = itemView.findViewById(R.id.ivEmergencyContactImage);
