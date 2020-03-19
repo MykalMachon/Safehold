@@ -12,7 +12,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.tinybox.safehold.R;
-import com.tinybox.safehold.ui.account.preferences.EmergencyContacts;
+import com.tinybox.safehold.ui.account.emergency_contact_preference.EmergencyContactsActivity;
 
 public class PreferencesSubFragment extends PreferenceFragmentCompat  {
     Context c;
@@ -45,7 +45,7 @@ public class PreferencesSubFragment extends PreferenceFragmentCompat  {
         findPreference("config_contacts").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(c, EmergencyContacts.class);
+                Intent i = new Intent(c, EmergencyContactsActivity.class);
                 startActivityForResult(i,1);
                 return true;
             }

@@ -6,4 +6,7 @@
     <color name="white">#ffffff</color>
     <color name="gray">#969696</color>
     <color name="colorSecondaryDark">#151515</color>
+    <color name="border_color">#2C2C2C</color>
+    <color name="selection_bg_color">#0995B1</color>
+    <color name="colorGreenAccent">#7CB342</color>
 </resources>

@@ -52,7 +52,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
     private String getUserFirstName(){
         String name = preferences.getString("user_name",null);
         if(name==null){
-            name = "SafeHold User";
+            name = "User";
         }
         else{
             name = name.split(" ")[0];

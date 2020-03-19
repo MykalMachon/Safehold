@@ -5,7 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.account.preferences.EmergencyContacts"
+    tools:context=".ui.account.emergency_contact_preference.EmergencyContactsActivity"
     tools:showIn="@layout/activity_emergency_contacts">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/emergency_contact_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

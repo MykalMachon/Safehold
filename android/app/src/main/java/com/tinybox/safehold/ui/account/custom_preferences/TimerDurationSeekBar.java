@@ -1,4 +1,4 @@
-package com.tinybox.safehold.ui.account.preferences;
+package com.tinybox.safehold.ui.account.custom_preferences;
 
 import android.content.Context;
 import android.util.AttributeSet;

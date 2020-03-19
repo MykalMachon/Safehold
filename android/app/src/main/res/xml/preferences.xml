@@ -29,7 +29,7 @@
         app:key="panic_mode_settings_category"
         app:title="Panic Mode Settings">
 
-        <com.tinybox.safehold.ui.account.preferences.TimerDurationSeekBar
+        <com.tinybox.safehold.ui.account.custom_preferences.TimerDurationSeekBar
             app:key="config_lock_timeout"
             app:summary="Time to wait (in seconds) before sending out alert."
             app:title="Alert Timer Duration (in seconds)"
