@@ -185,17 +185,21 @@ public class EmergencyContactsActivity extends AppCompatActivity {
 
         for(long id: cIds){
             Cursor contactLookupCursor =  queryPhoneNumbers(id);
-            if (contactLookupCursor.getCount()>0){
-                //contactLookupCursor.moveToFirst();
-                contacts.add(new Contact(
-                        id,
-                        contactLookupCursor.getString(contactLookupCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
-                        contactLookupCursor.getString(contactLookupCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                ));
 
-            }
-            else{
-                Log.wtf("EXECPTION","Something went wrong!");
+            try{
+                if (contactLookupCursor.getCount()>0){
+                    //contactLookupCursor.moveToFirst();
+                    contacts.add(new Contact(
+                            id,
+                            contactLookupCursor.getString(contactLookupCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
+                            contactLookupCursor.getString(contactLookupCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                    ));
+
+                }
+                else{
+                    Log.wtf("EXECPTION","Something went wrong!");
+            }}catch (Exception e){
+                e.printStackTrace();
             }
         }
 
