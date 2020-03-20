@@ -185,7 +185,7 @@ public class EmergencyContactsActivity extends AppCompatActivity {
 
         for(long id: cIds){
             Cursor contactLookupCursor =  queryPhoneNumbers(id);
-            if (contactLookupCursor.getCount()==1){
+            if (contactLookupCursor.getCount()>0){
                 //contactLookupCursor.moveToFirst();
                 contacts.add(new Contact(
                         id,
@@ -195,7 +195,7 @@ public class EmergencyContactsActivity extends AppCompatActivity {
 
             }
             else{
-                Log.wtf("EXECPTION","Something went wrong! Multiple Contacts with same ID found.");
+                Log.wtf("EXECPTION","Something went wrong!");
             }
         }
 

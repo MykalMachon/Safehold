@@ -1,6 +1,7 @@
 package com.tinybox.safehold.ui.home;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -56,9 +58,41 @@ public class HomeFragment extends Fragment {
         checkPermissions();
         setOnClickListenersForPermissionsScreen();
 
+
         return root;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setOnClickListenerForSafeHoldButton();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void setOnClickListenerForSafeHoldButton(){
+        Button holdButton = (Button) getView().findViewById(R.id.hold_button);
+        holdButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Toast toast = Toast.makeText(getActivity(),"hello down",Toast.LENGTH_SHORT);
+                        toast.show();
+                        return true; // if you want to handle the touch event
+                    case MotionEvent.ACTION_UP:
+                        Toast toast1 = Toast.makeText(getActivity(),"hello up",Toast.LENGTH_SHORT);
+                        toast1.show();
+                        return true; // if you want to handle the touch event
+                }
+                return false;
+            }
+
+        });
+
+
+
+
+    }
 
 
     public void setOnClickListenersForPermissionsScreen(){
