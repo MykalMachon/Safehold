@@ -5,19 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/hold_button"
-        android:layout_width="267dp"
-        android:layout_height="282dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/hold_button_shape"
-        android:text="@string/hold_string"
-        android:textColor="@color/colorAccent"
-        android:textSize="36sp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/safehold_home_permission_granted"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.366" />
+        tools:layout_editor_absoluteX="1dp">
+
+        <Button
+            android:id="@+id/hold_button"
+            android:layout_width="267dp"
+            android:layout_height="282dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/hold_button_shape"
+            android:text="@string/hold_string"
+            android:textColor="@color/colorAccent"
+            android:textSize="36sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.366" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include layout="@layout/content_permissions_prompt_layout"
+        android:visibility="visible"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
