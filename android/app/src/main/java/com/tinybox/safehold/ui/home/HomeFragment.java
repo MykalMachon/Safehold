@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.AndroidResources;
 
 import com.tinybox.safehold.R;
 import com.tinybox.safehold.receivers.DeviceAdmin;
@@ -70,18 +71,17 @@ public class HomeFragment extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     public void setOnClickListenerForSafeHoldButton(){
-        Button holdButton = (Button) getView().findViewById(R.id.hold_button);
+        final Button holdButton = (Button) getView().findViewById(R.id.hold_button);
         holdButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        Toast toast = Toast.makeText(getActivity(),"hello down",Toast.LENGTH_SHORT);
-                        toast.show();
+                        holdButton.setText("ABORT");
+                        holdButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
                         return true; // if you want to handle the touch event
                     case MotionEvent.ACTION_UP:
-                        Toast toast1 = Toast.makeText(getActivity(),"hello up",Toast.LENGTH_SHORT);
-                        toast1.show();
+                        deviceManger.lockNow();
                         return true; // if you want to handle the touch event
                 }
                 return false;
