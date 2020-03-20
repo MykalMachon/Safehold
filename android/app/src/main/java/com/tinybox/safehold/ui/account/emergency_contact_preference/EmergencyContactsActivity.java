@@ -41,6 +41,10 @@ public class EmergencyContactsActivity extends AppCompatActivity {
     private static final int CONTACT_PICKER_REQUEST=20;
     private Activity currentActivity;
     private EmergencyContactDataHandler contactDataHandler;
+    private EmergencyContactAdapter adapter;
+    private List<Contact> contactList;
+    List<Long> contactIDs;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +56,9 @@ public class EmergencyContactsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Emergency Contact List");
         contactDataHandler = new EmergencyContactDataHandler(this);
 
-        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.emergency_contact_recycler);
-        List<Long> contactIDs = contactDataHandler.getContactIDs();
-        List<Contact> contactList =getContacts(contactIDs);
+        recyclerView=(RecyclerView)findViewById(R.id.emergency_contact_recycler);
+        contactIDs = contactDataHandler.getContactIDs();
+        contactList=getContacts(contactIDs);
 
 
         // use this setting to improve performance if you know that changes
@@ -64,7 +68,7 @@ public class EmergencyContactsActivity extends AppCompatActivity {
         // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        EmergencyContactAdapter adapter =new EmergencyContactAdapter(contactList);
+        adapter =new EmergencyContactAdapter(contactList,this.contactDataHandler);
         recyclerView.setAdapter(adapter);
 
         currentActivity = this;
@@ -111,6 +115,7 @@ public class EmergencyContactsActivity extends AppCompatActivity {
                             .handleColor(ContextCompat.getColor(EmergencyContactsActivity.this, R.color.colorAccent)) //Optional - default: Azure Blue
                             .bubbleColor(ContextCompat.getColor(EmergencyContactsActivity.this, R.color.colorAccent)) //Optional - default: Azure Blue
                             .showPickerForResult(CONTACT_PICKER_REQUEST);
+
                 }
 
 
@@ -158,8 +163,13 @@ public class EmergencyContactsActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK) {
                 List<ContactResult> results = MultiContactPicker.obtainResult(data);
                 for(ContactResult result: results){
+
                     contactDataHandler.addContactWithID(Long.parseLong(result.getContactID()));
                 }
+
+                contactIDs = contactDataHandler.getContactIDs();
+                contactList=getContacts(contactIDs);
+                recyclerView.setAdapter(new EmergencyContactAdapter(contactList,contactDataHandler));
 
                 Snackbar.make(findViewById(R.id.fab), results.size()+" new Contact added!", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();

@@ -11,15 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tinybox.safehold.R;
 import com.tinybox.safehold.data.Contact;
+import com.tinybox.safehold.data.EmergencyContactDataHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyContactAdapter.EmergencyContactHolder>{
     private List<Contact> contactList;
+    private EmergencyContactDataHandler contactDataHandler;
 
-    public EmergencyContactAdapter(List<Contact> contactList) {
+    public EmergencyContactAdapter(List<Contact> contactList,  EmergencyContactDataHandler contactDataHandler) {
         this.contactList = new ArrayList<>(contactList);
+        this.contactDataHandler = contactDataHandler;
 
     }
 
@@ -43,6 +46,10 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
                     @Override
                     public void onClick(View v) {
                         Log.wtf("deleted", "Deleted: "+ contactList.get(position).getId());
+                        contactDataHandler.deleteContactWithID(contactList.get(position).getId());
+                        contactList.remove(position);
+                        notifyItemRemoved(position);
+
                     }
                 }
         );
@@ -60,7 +67,7 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
         public ImageView emergencyContactDeleteButton;
 
         public EmergencyContactHolder(@NonNull View itemView) {
-            super(itemView); 
+            super(itemView);
             emergencyContactName = itemView.findViewById(R.id.tvEmergencyContactName);
             emergencyContactPhoneNumber = itemView.findViewById(R.id.tvEmergencyContactPhoneNumber);
             emergencyContactImage = itemView.findViewById(R.id.ivEmergencyContactImage);

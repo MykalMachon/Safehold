@@ -46,7 +46,7 @@ public class EmergencyContactDataHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(DatabaseConstants.KEY_CONTACT_ID, id);
         // Insert to row
-        db.insertOrThrow(DatabaseConstants.TABLE_NAME, null, values);
+        db.insert(DatabaseConstants.TABLE_NAME, null, values);
         db.close(); // closing db connection
     }
 
