@@ -5,5 +5,101 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.survey.SurveyActivity">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/survey_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/Survey_LabelOne"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="What caused you to feel unsafe?" />
+
+            <EditText
+                android:id="@+id/Survey_AnswerOne"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/Survey_LabelTwo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Did your event end safely?" />
+
+            <Spinner
+                android:id="@+id/Survey_AnswerTwo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/Survey_LabelThree"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Would you like to share your location anonymously?" />
+
+            <Spinner
+                android:id="@+id/Survey_AnswerThree"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/Survey_subLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Safehold completely anonymizes your data"
+                android:textColor="@color/azureColorPrimary"
+                />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@color/azureColorPrimaryDark"
+            android:text="Submit Survey" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
