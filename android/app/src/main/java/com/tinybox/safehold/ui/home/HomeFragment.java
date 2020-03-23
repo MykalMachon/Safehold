@@ -4,16 +4,21 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,8 +34,14 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.AndroidResources;
 
 import com.tinybox.safehold.R;
+import com.tinybox.safehold.TimerService;
 import com.tinybox.safehold.receivers.DeviceAdmin;
 import com.tinybox.safehold.ui.map.PermissionUtils;
+
+import org.w3c.dom.Text;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class HomeFragment extends Fragment {
 
@@ -38,10 +49,22 @@ public class HomeFragment extends Fragment {
     private View fragmentView;
     ComponentName compName;
     DevicePolicyManager deviceManger;
+    private boolean isTimerRunning;
+    private TextView timerTv;
+
+
+    private String date_time;
+    private Calendar calendar;
+    private SimpleDateFormat simpleDateFormat;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 11;
     private static final int CONTACT_PERMISSION_REQUEST_CODE = 12;
     private static final int LOCK_PERMISSION_REQUEST_CODE = 13;
+    private static final int SMS_PERMISSION_REQUEST_CODE = 14;
+
+
+    SharedPreferences mpref;
+    SharedPreferences.Editor mEditor;
 
 
     @Override
@@ -58,8 +81,11 @@ public class HomeFragment extends Fragment {
 
         checkPermissions();
         setOnClickListenersForPermissionsScreen();
+        timerTv=(TextView) root.findViewById(R.id.tvTimer);
 
 
+        mpref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        mEditor = mpref.edit();
         return root;
     }
 
@@ -77,11 +103,34 @@ public class HomeFragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        holdButton.setText("ABORT");
-                        holdButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                        if(!isTimerRunning){
+                            holdButton.setText("ABORT");
+                            holdButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                        }
+                        else{
+                            Intent intent = new Intent(getActivity().getApplicationContext(),TimerService.class);
+                            getActivity().stopService(intent);
+
+                            holdButton.setText("HOLD");
+                            timerTv.setText("00:00:00");
+                            holdButton.setTextColor(getResources().getColor(R.color.colorAccent));
+                        }
+                        isTimerRunning=!isTimerRunning;
                         return true; // if you want to handle the touch event
                     case MotionEvent.ACTION_UP:
-                        deviceManger.lockNow();
+                        if(isTimerRunning){
+                            deviceManger.lockNow();
+
+
+                            calendar = Calendar.getInstance();
+                            simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+                            date_time = simpleDateFormat.format(calendar.getTime());
+
+                            mEditor.putString("date_time", date_time).commit();
+                            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            Intent intent_service = new Intent(getActivity().getApplicationContext(), TimerService.class);
+                            getActivity().startService(intent_service);
+                        }
                         return true; // if you want to handle the touch event
                 }
                 return false;
@@ -120,13 +169,20 @@ public class HomeFragment extends Fragment {
                 requestPermissions(new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
             }
         });
+
+        fragmentView.findViewById(R.id.bvGrantSMSPermission).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestPermissions(new String[] {Manifest.permission.SEND_SMS}, SMS_PERMISSION_REQUEST_CODE);
+            }
+        });
     }
 
 
 
     public boolean[] checkPermissions(){
         boolean atleastOnePermissionNotGranted = false;
-        boolean[] results = new boolean[3];
+        boolean[] results = new boolean[4];
         String[] permissions = {Manifest.permission.READ_CONTACTS, Manifest.permission.ACCESS_FINE_LOCATION};
         if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             results[0] = true;
@@ -176,6 +232,20 @@ public class HomeFragment extends Fragment {
             atleastOnePermissionNotGranted = true;
         }
 
+
+        if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
+            results[3] = true;
+            ((ImageView)fragmentView.findViewById(R.id.sms_permission_status_indicator)).setImageDrawable(getActivity().getDrawable(R.drawable.ic_check_green_24dp));
+            fragmentView.findViewById(R.id.bvGrantSMSPermission).setVisibility(View.INVISIBLE);
+        }
+        else {
+            results[3] = false;
+            atleastOnePermissionNotGranted = true;
+            ((ImageView)fragmentView.findViewById(R.id.sms_permission_status_indicator)).setImageDrawable(getActivity().getDrawable(R.drawable.ic_cross_red_24dp));
+            fragmentView.findViewById(R.id.bvGrantSMSPermission).setVisibility(View.VISIBLE);
+            //((Button)fragmentView.findViewById(R.id.bvGrantContactPermission)).setEnabled(true);
+        }
+
         if(!atleastOnePermissionNotGranted){
             fragmentView.findViewById(R.id.safehold_home_permission_not_granted).setVisibility(View.INVISIBLE);
             fragmentView.findViewById(R.id.safehold_home_permission_granted).setVisibility(View.VISIBLE);
@@ -185,11 +255,19 @@ public class HomeFragment extends Fragment {
             fragmentView.findViewById(R.id.safehold_home_permission_granted).setVisibility(View.INVISIBLE);
         }
 
+
         return results;
 
     }
+    // code was derived from https://deepshikhapuri.wordpress.com/2016/11/07/android-countdown-timer-run-in-background/
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String remainingTime = intent.getStringExtra("safehold_timer_time");
+            timerTv.setText(remainingTime);
 
-
+        }
+    };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -205,5 +283,17 @@ public class HomeFragment extends Fragment {
             case LOCK_PERMISSION_REQUEST_CODE :
                 checkPermissions();
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter(TimerService.str_receiver));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(broadcastReceiver);
     }
 }

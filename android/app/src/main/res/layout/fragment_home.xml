@@ -6,13 +6,14 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/safehold_home_permission_granted"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/safehold_home_permission_granted"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="1dp">
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="-39dp">
 
         <Button
             android:id="@+id/hold_button"
@@ -30,11 +31,37 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.366" />
 
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="invisible"
+            android:text="Alert has been sent to your emergency contacts. Abort to stop sending further alerts."
+            android:textColor="@android:color/holo_red_dark"
+            app:layout_constraintBottom_toTopOf="@+id/hold_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.8" />
+
+        <TextView
+            android:id="@+id/tvTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00:00"
+            android:textSize="48sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hold_button"
+            app:layout_constraintVertical_bias="0.36" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/content_permissions_prompt_layout"
-        android:visibility="visible"/>
+        android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
