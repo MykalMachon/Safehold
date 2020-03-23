@@ -15,9 +15,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ui.survey.SurveyActivity"
+            android:label="Survey"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity
             android:name=".ui.account.emergency_contact_preference.EmergencyContactsActivity"
             android:label="@string/title_activity_emergency_contacts"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -28,15 +33,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <receiver
-            android:name= "com.tinybox.safehold.receivers.DeviceAdmin"
-            android:label= "@string/app_name"
-            android:permission= "android.permission.BIND_DEVICE_ADMIN" >
+            android:name=".receivers.DeviceAdmin"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
-                android:name= "android.app.device_admin"
-                android:resource= "@xml/policies" />
+                android:name="android.app.device_admin"
+                android:resource="@xml/policies" />
+
             <intent-filter>
-                <action android:name= "android.app.action.DEVICE_ADMIN_ENABLED" />
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
 
