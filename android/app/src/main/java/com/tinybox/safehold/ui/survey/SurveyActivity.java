@@ -20,7 +20,7 @@ public class SurveyActivity extends AppCompatActivity {
     Toolbar toolbar = findViewById(R.id.survey_toolbar);
     toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp,null));
     setSupportActionBar(toolbar);
-    getSupportActionBar().setTitle("Survey");
+    getSupportActionBar().setTitle("Mind Sharing What Happened?");
 
     // Set the spinner for question 2
     Spinner qTwoSpinner = (Spinner) findViewById(R.id.Survey_AnswerTwo);
