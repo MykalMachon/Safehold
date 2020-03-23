@@ -33,17 +33,20 @@
             android:padding="16dp">
 
             <TextView
+                android:labelFor="@+id/Survey_AnswerOne"
                 android:id="@+id/Survey_LabelOne"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="What caused you to feel unsafe?" />
 
-            <EditText
+            <MultiAutoCompleteTextView
                 android:id="@+id/Survey_AnswerOne"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"
+                android:minLines="3"
+                android:singleLine="false"
                 android:text="" />
         </LinearLayout>
 
@@ -88,7 +91,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Safehold completely anonymizes your data"
-                android:textColor="@color/azureColorPrimary"
+                android:textSize="12dp"
+                android:paddingVertical="8dp"
+                android:textColor="@color/selection_bg_color"
                 />
 
         </LinearLayout>
@@ -98,7 +103,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:background="@color/azureColorPrimaryDark"
+            android:background="@color/selection_bg_color"
             android:text="Submit Survey" />
     </LinearLayout>
 
