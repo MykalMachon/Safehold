@@ -53,6 +53,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
     private GoogleMap mMap;
     private LocationManager locationManager;
 
+    private static double longitude;
+    private static double latitude;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -137,6 +140,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
     public void onLocationChanged(Location location) {
         double longitude = location.getLongitude();
         double latitude = location.getLatitude();
+        setLongitude(longitude);
+        setLatitude(latitude);
         Log.d("Coordinates", "OnView: " +  "Longitude: " + longitude + ", " +  "Latitude: " + latitude);
 
     }
@@ -154,5 +159,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    public static double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public static  double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 }

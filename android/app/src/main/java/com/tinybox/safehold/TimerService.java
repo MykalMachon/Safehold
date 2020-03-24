@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import com.tinybox.safehold.ui.map.MapFragment;
 
 // code for this class was derived from https://deepshikhapuri.wordpress.com/2016/11/07/android-countdown-timer-run-in-background/
 public class TimerService extends Service {
@@ -118,6 +119,7 @@ public class TimerService extends Service {
 
                 //TODO: send SMS here
                 // Check if live location is ON if it is ON then send SMS using a timer every minute
+                Log.d("Timer: ", "Timeup: " + MapFragment.getLongitude() + ", " + MapFragment.getLatitude());
                 // else just send once
 
                 timer.cancel();
