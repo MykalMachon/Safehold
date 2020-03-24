@@ -1,12 +1,15 @@
 package com.tinybox.safehold;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,7 +17,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
-import com.tinybox.safehold.ui.map.MapFragment;
 
 // code for this class was derived from https://deepshikhapuri.wordpress.com/2016/11/07/android-countdown-timer-run-in-background/
 public class TimerService extends Service {
@@ -33,10 +35,14 @@ public class TimerService extends Service {
     public static final long NOTIFY_INTERVAL = 1000;
     Intent intent;
 
+    private double latitude;
+    private double longitude;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
+
 
     @Override
     public void onCreate() {
@@ -119,8 +125,10 @@ public class TimerService extends Service {
 
                 //TODO: send SMS here
                 // Check if live location is ON if it is ON then send SMS using a timer every minute
-                Log.d("Timer: ", "Timeup: " + MapFragment.getLatitude() + ","  + MapFragment.getLongitude() );
-                // else just send once
+                latitude = Double.valueOf(sharedPreferences.getString("Latitude", ""));
+                longitude = Double.valueOf(sharedPreferences.getString("Longitude", ""));
+                Log.d("Timer", "Timeup: " + latitude + "," + longitude);
+//                // else just send once
 
                 timer.cancel();
             }

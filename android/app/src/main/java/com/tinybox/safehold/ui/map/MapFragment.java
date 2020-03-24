@@ -53,8 +53,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
     private GoogleMap mMap;
     private LocationManager locationManager;
 
-    private static double longitude;
-    private static double latitude;
+    private double longitude;
+    private double latitude;
 
 
     @Override
@@ -84,7 +84,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
     /**
      * Enables the My Location layer if the fine location permission has been granted.
      */
-    private void enableMyLocation() {
+    public void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission to access the location is missing.
@@ -161,7 +161,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
 
     }
 
-    public static double getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
@@ -169,7 +169,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
         this.longitude = longitude;
     }
 
-    public static  double getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
