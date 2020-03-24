@@ -119,7 +119,7 @@ public class TimerService extends Service {
 
                 //TODO: send SMS here
                 // Check if live location is ON if it is ON then send SMS using a timer every minute
-                Log.d("Timer: ", "Timeup: " + MapFragment.getLongitude() + ", " + MapFragment.getLatitude());
+                Log.d("Timer: ", "Timeup: " + MapFragment.getLatitude() + ","  + MapFragment.getLongitude() );
                 // else just send once
 
                 timer.cancel();

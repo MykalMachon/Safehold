@@ -142,7 +142,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
         double latitude = location.getLatitude();
         setLongitude(longitude);
         setLatitude(latitude);
-        Log.d("Coordinates", "OnView: " +  "Longitude: " + longitude + ", " +  "Latitude: " + latitude);
+        Log.d("Coordinates", "OnView: " +  "Latitude: " + latitude +  ", " +  "Longitude: " + longitude );
 
     }
 
