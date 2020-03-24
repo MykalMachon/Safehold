@@ -2,7 +2,6 @@ package com.tinybox.safehold.ui.home;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -11,43 +10,30 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.preference.AndroidResources;
 
 import com.tinybox.safehold.R;
 import com.tinybox.safehold.TimerService;
 import com.tinybox.safehold.receivers.DeviceAdmin;
-import com.tinybox.safehold.ui.map.PermissionUtils;
-
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class HomeFragment extends Fragment implements LocationListener {
+public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     private View fragmentView;
@@ -60,11 +46,6 @@ public class HomeFragment extends Fragment implements LocationListener {
     private String date_time;
     private Calendar calendar;
     private SimpleDateFormat simpleDateFormat;
-
-    private LocationManager locationManager;
-
-    private double longitude;
-    private double latitude;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 11;
     private static final int CONTACT_PERMISSION_REQUEST_CODE = 12;
@@ -134,10 +115,7 @@ public class HomeFragment extends Fragment implements LocationListener {
                             calendar = Calendar.getInstance();
                             simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
                             date_time = simpleDateFormat.format(calendar.getTime());
-                            enableMyLocation();
                             mEditor.putString("date_time", date_time).commit();
-                            mEditor.putString("Latitude", String.valueOf(getLatitude())).commit();
-                            mEditor.putString("Longitude", String.valueOf(getLongitude())).commit();
                             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                             Intent intent_service = new Intent(getActivity().getApplicationContext(), TimerService.class);
                             getActivity().startService(intent_service);
@@ -306,60 +284,5 @@ public class HomeFragment extends Fragment implements LocationListener {
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(broadcastReceiver);
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        double longitude = location.getLongitude();
-        double latitude = location.getLatitude();
-        setLongitude(longitude);
-        setLatitude(latitude);
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    /**
-     * Enables the My Location layer if the fine location permission has been granted.
-     */
-    public void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
-            PermissionUtils.requestPermission(getActivity(), LOCATION_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true);
-        } else {
-            locationManager = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
-            Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-            onLocationChanged(location);
-        }
     }
 }

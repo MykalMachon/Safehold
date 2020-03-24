@@ -42,7 +42,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
      *
      * @see #onRequestPermissionsResult(int, String[], int[])
      */
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 11;
 
     /**
      * Flag indicating whether a requested permission has been denied after returning in

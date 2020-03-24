@@ -1,30 +1,49 @@
 package com.tinybox.safehold;
 
-import android.app.Activity;
+import android.Manifest;
 import android.app.Service;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+
+import com.tinybox.safehold.data.Contact;
+import com.tinybox.safehold.data.EmergencyContactDataHandler;
+import com.tinybox.safehold.ui.account.emergency_contact_preference.EmergencyContactsActivity;
+import com.tinybox.safehold.ui.map.PermissionUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 // code for this class was derived from https://deepshikhapuri.wordpress.com/2016/11/07/android-countdown-timer-run-in-background/
-public class TimerService extends Service {
+public class TimerService extends Service implements LocationListener {
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 11;
     public static String str_receiver = "com.tinybox.receiver";
+
 
     private Handler mHandler = new Handler();
     Calendar calendar;
@@ -33,13 +52,33 @@ public class TimerService extends Service {
     Date date_current, date_diff;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor sharedPrefEditor;
-
+    LocationManager locationManager;
     private Timer timer = null;
     public static final long NOTIFY_INTERVAL = 1000;
     Intent intent;
 
     private double latitude;
     private double longitude;
+
+    List<Long> contactIDs;
+    private List<Contact> contactList;
+    private EmergencyContactDataHandler contactDataHandler;
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -59,6 +98,51 @@ public class TimerService extends Service {
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 5, NOTIFY_INTERVAL);
         intent = new Intent(str_receiver);
+        enableMyLocation();
+        contactDataHandler = new EmergencyContactDataHandler(getApplication());
+        contactIDs = contactDataHandler.getContactIDs();
+        this.contactList = getContacts(contactIDs);
+
+    }
+
+    /**
+     * Enables the My Location layer if the fine location permission has been granted.
+     */
+    public void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing.
+            PermissionUtils.requestPermission((FragmentActivity) getApplicationContext(), LOCATION_PERMISSION_REQUEST_CODE,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+        } else {
+            locationManager = (LocationManager) getApplicationContext().getSystemService(getApplicationContext().LOCATION_SERVICE);
+            Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+            onLocationChanged(location);
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double longitude = location.getLongitude();
+        double latitude = location.getLatitude();
+        setLongitude(longitude);
+        setLatitude(latitude);
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 
 
@@ -128,14 +212,15 @@ public class TimerService extends Service {
 
                 //TODO: send SMS here
                 // Check if live location is ON if it is ON then send SMS using a timer every minute
-                latitude = Double.valueOf(sharedPreferences.getString("Latitude", ""));
-                longitude = Double.valueOf(sharedPreferences.getString("Longitude", ""));
-                Log.d("Timer", "Timeup: " + latitude + "," + longitude);
-                String message = getString(R.string.sms_content) + " " + getString(R.string.map_link) + latitude + "," + longitude;
+                Log.d("Timer", "Timeup: " + getLatitude() + "," + getLongitude());
+                String message = getString(R.string.sms_content) + " " + getString(R.string.map_link) + getLatitude() + "," + getLongitude();
                 SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage("98765", null, message, null, null);
                 Toast.makeText(getApplicationContext(), "SMS sent successfully!", Toast.LENGTH_SHORT).show();
-//                // else just send once
+                for(Contact contact: contactList) {
+                    smsManager.sendTextMessage(contact.getPhoneNumber(), null, message, null, null);
+                }
+              // else just send once
 
                 timer.cancel();
             }
@@ -164,5 +249,52 @@ public class TimerService extends Service {
 
         intent.putExtra("safehold_timer_time",str_time);
         sendBroadcast(intent);
+    }
+
+
+    public List<Contact> getContacts(List<Long> cIds){
+        List<Contact> contacts = new ArrayList<>();
+
+        for(long id: cIds){
+            Cursor contactLookupCursor =  queryPhoneNumbers(id);
+
+            try{
+                if (contactLookupCursor.getCount()>0){
+                    //contactLookupCursor.moveToFirst();
+                    contacts.add(new Contact(
+                            id,
+                            contactLookupCursor.getString(contactLookupCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
+                            contactLookupCursor.getString(contactLookupCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                    ));
+
+                }
+                else{
+                    Log.wtf("EXECPTION","Something went wrong!");
+                }}catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        return contacts;
+    }
+
+
+    private Cursor queryPhoneNumbers(long contactId) {
+        ContentResolver cr = getContentResolver();
+        Uri baseUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
+                contactId);
+        Uri dataUri = Uri.withAppendedPath(baseUri,
+                ContactsContract.Contacts.Data.CONTENT_DIRECTORY);
+
+        Cursor c = cr.query(dataUri, new String[]{ContactsContract.CommonDataKinds.Phone._ID, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                        ContactsContract.CommonDataKinds.Phone.IS_SUPER_PRIMARY, ContactsContract.RawContacts.ACCOUNT_TYPE,
+                        ContactsContract.CommonDataKinds.Phone.TYPE,
+                        ContactsContract.CommonDataKinds.Phone.LABEL},
+                ContactsContract.Data.MIMETYPE + "=?",
+                new String[]{ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE}, null);
+        if (c != null && c.moveToFirst()) {
+            return c;
+        }
+        return null;
     }
 }
