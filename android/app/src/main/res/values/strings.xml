@@ -4,6 +4,7 @@
     <string name="title_dashboard">Map</string>
     <string name="navigation_label_manage">Settings</string>
     <string name="hold_string">HOLD</string>
+    <string name="emergency_services">911</string>
 
     <!--    Permissions    -->
     <string name="permission_rationale_location">Access to the location service is required to locate your location, which shows your current location on the map.</string>
@@ -19,4 +20,6 @@
     <!-- SMS strings -->
     <string name="map_link"> https://www.google.com/maps/place/</string>
     <string name="sms_content">Please help me!! You can find me at: </string>
+    <string name="sms_sent">Your location has been sent to your Emergency Contacts</string>
+    <string name="empty_contact_list">No Emergency Contact. Dial 911!</string>
 </resources>

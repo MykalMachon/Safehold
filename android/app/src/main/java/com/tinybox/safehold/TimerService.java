@@ -21,12 +21,15 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.tinybox.safehold.data.Contact;
 import com.tinybox.safehold.data.EmergencyContactDataHandler;
 import com.tinybox.safehold.ui.account.emergency_contact_preference.EmergencyContactsActivity;
+import com.tinybox.safehold.ui.home.HomeFragment;
 import com.tinybox.safehold.ui.map.PermissionUtils;
 
 import java.text.SimpleDateFormat;
@@ -42,6 +45,8 @@ import java.util.concurrent.TimeUnit;
 public class TimerService extends Service implements LocationListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 11;
+    private static final int PHONE_PERMISSION_REQUEST_CODE = 15;
+
     public static String str_receiver = "com.tinybox.receiver";
 
 
@@ -56,6 +61,7 @@ public class TimerService extends Service implements LocationListener {
     private Timer timer = null;
     public static final long NOTIFY_INTERVAL = 1000;
     Intent intent;
+    HomeFragment homeFragment = null;
 
     private double latitude;
     private double longitude;
@@ -84,7 +90,6 @@ public class TimerService extends Service implements LocationListener {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
 
     @Override
     public void onCreate() {
@@ -197,9 +202,9 @@ public class TimerService extends Service implements LocationListener {
 
 
             if (long_hours > 0) {
-                String str_testing =  ((diffHours2>=9)?diffHours2:"0"+diffHours2)  +
-                        ":" + ((diffMinutes2>=9)?diffMinutes2:"0"+diffMinutes2) +
-                        ":" + ((diffSeconds2>=9)?diffSeconds2:"0"+diffSeconds2) ;
+                String str_testing = ((diffHours2 >= 9) ? diffHours2 : "0" + diffHours2) +
+                        ":" + ((diffMinutes2 >= 9) ? diffMinutes2 : "0" + diffMinutes2) +
+                        ":" + ((diffSeconds2 >= 9) ? diffSeconds2 : "0" + diffSeconds2);
 
                 Log.e("TIME", str_testing);
 
@@ -208,17 +213,32 @@ public class TimerService extends Service implements LocationListener {
                 sharedPrefEditor.putBoolean("finish", true).commit();
 
                 fn_update("00:00:00");
-                Log.wtf("End","SMS sent");
+                Log.wtf("End", "SMS sent");
 
                 //TODO: send SMS here
                 // Check if live location is ON if it is ON then send SMS using a timer every minute
                 Log.d("Timer", "Timeup: " + getLatitude() + "," + getLongitude());
-                String message = getString(R.string.sms_content) + " " + getString(R.string.map_link) + getLatitude() + "," + getLongitude();
-                SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage("98765", null, message, null, null);
-                Toast.makeText(getApplicationContext(), "SMS sent successfully!", Toast.LENGTH_SHORT).show();
-                for(Contact contact: contactList) {
-                    smsManager.sendTextMessage(contact.getPhoneNumber(), null, message, null, null);
+                try {
+                    if (!contactList.isEmpty()) {
+                        String message = getString(R.string.sms_content) + " " + getString(R.string.map_link) + getLatitude() + "," + getLongitude();
+                        SmsManager smsManager = SmsManager.getDefault();
+                        Toast.makeText(getApplicationContext(), getString(R.string.sms_sent), Toast.LENGTH_LONG).show();
+                        for (Contact contact : contactList) {
+                            smsManager.sendTextMessage(contact.getPhoneNumber(), null, message, null, null);
+                        }
+                    }
+
+                    else
+                        throw new Exception();
+                    }
+
+                catch(Exception e) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.empty_contact_list), Toast.LENGTH_SHORT).show();
+                    Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+                    dialIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    dialIntent.setData(Uri.parse("tel:" + getString(R.string.emergency_services)));
+                    startActivity(dialIntent);
+
                 }
               // else just send once
 
@@ -234,6 +254,10 @@ public class TimerService extends Service implements LocationListener {
         return "";
 
     }
+
+
+
+
 
     @Override
     public void onDestroy() {
