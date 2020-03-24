@@ -15,4 +15,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="greetings_preference_page">Howdy, %1$s!</string>
+
+    <!-- SMS strings -->
+    <string name="map_link"> https://www.google.com/maps/place/</string>
+    <string name="sms_content">Please help me!! You can find me here: </string>
 </resources>

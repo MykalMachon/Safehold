@@ -8,8 +8,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -128,6 +131,10 @@ public class TimerService extends Service {
                 latitude = Double.valueOf(sharedPreferences.getString("Latitude", ""));
                 longitude = Double.valueOf(sharedPreferences.getString("Longitude", ""));
                 Log.d("Timer", "Timeup: " + latitude + "," + longitude);
+                String message = getString(R.string.sms_content) + " " + getString(R.string.map_link) + latitude + "," + longitude;
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage("98765", null, message, null, null);
+                Toast.makeText(getApplicationContext(), "SMS sent successfully!", Toast.LENGTH_SHORT).show();
 //                // else just send once
 
                 timer.cancel();
