@@ -17,7 +17,11 @@ package com.tinybox.safehold.ui.map;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +36,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.tinybox.safehold.R;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, LocationListener {
     /**
      * Request code for location permission request.
      *
@@ -47,20 +51,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
     private boolean mPermissionDenied = false;
 
     private GoogleMap mMap;
+    private LocationManager locationManager;
 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
-       return inflater.inflate(R.layout.fragment_map, container, false);
+        return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         MapView mapView;
-
         mapView = view.findViewById(R.id.map);
         if (mapView != null) {
             mapView.onCreate(null);
@@ -87,6 +90,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
+            locationManager = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
+            Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+            onLocationChanged(location);
+
+
         }
     }
 
@@ -123,5 +131,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getActivity().getSupportFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double longitude = location.getLongitude();
+        double latitude = location.getLatitude();
+        Log.d("Coordinates", "OnView: " +  "Longitude: " + longitude + ", " +  "Latitude: " + latitude);
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }
