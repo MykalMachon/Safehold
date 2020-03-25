@@ -36,7 +36,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.tinybox.safehold.R;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, LocationListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
     /**
      * Request code for location permission request.
      *
@@ -52,6 +52,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
 
     private GoogleMap mMap;
     private LocationManager locationManager;
+    private LocationListener locationListener;
 
     private double longitude;
     private double latitude;
@@ -60,6 +61,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
@@ -73,6 +76,39 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
             mapView.onResume();
             mapView.getMapAsync(this);
         }
+        locationManager = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                double longitude = location.getLongitude();
+                double latitude = location.getLatitude();
+                setLongitude(longitude);
+                setLatitude(latitude);
+                Log.d("Coordinates", "OnView: " + "Latitude: " + getLatitude() + " Longitude: " + getLongitude());
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            mPermissionDenied = true;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
     }
 
     @Override
@@ -93,10 +129,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
-            locationManager = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
-            Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-            onLocationChanged(location);
-
 
         }
     }
@@ -136,30 +168,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
                 .newInstance(true).show(getActivity().getSupportFragmentManager(), "dialog");
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        double longitude = location.getLongitude();
-        double latitude = location.getLatitude();
-        setLongitude(longitude);
-        setLatitude(latitude);
-        Log.d("Coordinates", "OnView: " +  "Latitude: " + latitude +  ", " +  "Longitude: " + longitude );
-
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
 
     public double getLongitude() {
         return longitude;
