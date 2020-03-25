@@ -1,6 +1,7 @@
 package com.tinybox.safehold;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -21,6 +22,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -39,10 +41,9 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 // code for this class was derived from https://deepshikhapuri.wordpress.com/2016/11/07/android-countdown-timer-run-in-background/
-public class TimerService extends Service implements LocationListener {
+public class TimerService extends Service {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 11;
-    private static final int PHONE_PERMISSION_REQUEST_CODE = 15;
 
     public static String str_receiver = "com.tinybox.receiver";
 
@@ -55,6 +56,8 @@ public class TimerService extends Service implements LocationListener {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor sharedPrefEditor;
     LocationManager locationManager;
+    private LocationListener locationListener;
+    private boolean mPermissionDenied = false;
     private Timer timer = null;
     public static final long NOTIFY_INTERVAL = 1000;
     Intent intent;
@@ -121,34 +124,39 @@ public class TimerService extends Service implements LocationListener {
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         } else {
             locationManager = (LocationManager) getApplicationContext().getSystemService(getApplicationContext().LOCATION_SERVICE);
-            Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-            onLocationChanged(location);
+            locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    double longitude = location.getLongitude();
+                    double latitude = location.getLatitude();
+                    setLongitude(longitude);
+                    setLatitude(latitude);
+                    Log.d("Coordinates", "Timing: " + "Latitude: " + getLatitude() + " Longitude: " + getLongitude());
+
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            };
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
         }
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        double longitude = location.getLongitude();
-        double latitude = location.getLatitude();
-        setLongitude(longitude);
-        setLatitude(latitude);
 
-    }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
 
 
     class TimeDisplayTimerTask extends TimerTask {
@@ -272,6 +280,8 @@ public class TimerService extends Service implements LocationListener {
         timer.cancel();
 
         //TODO: cancel Live timer for SMS here
+        //Turn off live location
+        locationManager.removeUpdates(locationListener);
 
         Log.e("Service finish", "Finish");
     }

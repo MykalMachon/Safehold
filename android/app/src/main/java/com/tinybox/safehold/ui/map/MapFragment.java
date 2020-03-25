@@ -76,40 +76,44 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
             mapView.onResume();
             mapView.getMapAsync(this);
         }
-        locationManager = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                double longitude = location.getLongitude();
-                double latitude = location.getLatitude();
-                setLongitude(longitude);
-                setLatitude(latitude);
-                Log.d("Coordinates", "OnView: " + "Latitude: " + getLatitude() + " Longitude: " + getLongitude());
 
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            mPermissionDenied = true;
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing.
+            PermissionUtils.requestPermission(getActivity(), LOCATION_PERMISSION_REQUEST_CODE,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            else {
+                locationManager = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
+                locationListener = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        double longitude = location.getLongitude();
+                        double latitude = location.getLatitude();
+                        setLongitude(longitude);
+                        setLatitude(latitude);
+                        Log.d("Coordinates", "OnView: " + "Latitude: " + getLatitude() + " Longitude: " + getLongitude());
 
-    }
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                };
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            }
+        }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -148,6 +152,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Activit
             // Display the missing permission error dialog when the fragments resume.
             mPermissionDenied = true;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        locationManager.removeUpdates(locationListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        locationManager.removeUpdates(locationListener);
     }
 
     @Override
