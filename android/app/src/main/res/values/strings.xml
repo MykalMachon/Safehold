@@ -19,7 +19,8 @@
 
     <!-- SMS strings -->
     <string name="map_link"> https://www.google.com/maps/place/</string>
-    <string name="sms_content">Please help me!! You can find me at: </string>
+    <string name="safe_hold_alert">SafeHold Alert: Hi </string>
+    <string name="sms_content">, I need your help and don\'t feel safe now. Please find me at </string>
     <string name="sms_sent">Your location has been sent to your Emergency Contacts</string>
     <string name="empty_contact_list">No Emergency Contact. Dial 911!</string>
 </resources>

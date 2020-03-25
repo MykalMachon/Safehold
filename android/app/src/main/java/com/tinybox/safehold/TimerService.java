@@ -21,14 +21,11 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tinybox.safehold.data.Contact;
 import com.tinybox.safehold.data.EmergencyContactDataHandler;
-import com.tinybox.safehold.ui.account.emergency_contact_preference.EmergencyContactsActivity;
 import com.tinybox.safehold.ui.home.HomeFragment;
 import com.tinybox.safehold.ui.map.PermissionUtils;
 
@@ -65,6 +62,9 @@ public class TimerService extends Service implements LocationListener {
 
     private double latitude;
     private double longitude;
+
+    private final long startTime = 30 * 1000; //it is 30 second change it for your own requirement
+    private final long interval = 1 * 1000; // 1 second interval
 
     List<Long> contactIDs;
     private List<Contact> contactList;
@@ -193,6 +193,8 @@ public class TimerService extends Service implements LocationListener {
 
             long diff = date_current.getTime() - date_diff.getTime();
             int int_hours = Integer.valueOf(sharedPreferences.getInt("config_lock_timeout", 30));
+            boolean tracking_switch = sharedPreferences.getBoolean("config_resend_alert", false);
+
 
             long int_timer = TimeUnit.SECONDS.toMillis(int_hours);
             long long_hours = int_timer - diff;
@@ -215,36 +217,30 @@ public class TimerService extends Service implements LocationListener {
                 fn_update("00:00:00");
                 Log.wtf("End", "SMS sent");
 
-                //TODO: send SMS here
                 // Check if live location is ON if it is ON then send SMS using a timer every minute
-                Log.d("Timer", "Timeup: " + getLatitude() + "," + getLongitude());
-                try {
-                    if (!contactList.isEmpty()) {
-                        String message = getString(R.string.sms_content) + " " + getString(R.string.map_link) + getLatitude() + "," + getLongitude();
-                        SmsManager smsManager = SmsManager.getDefault();
-                        Toast.makeText(getApplicationContext(), getString(R.string.sms_sent), Toast.LENGTH_LONG).show();
-                        for (Contact contact : contactList) {
-                            smsManager.sendTextMessage(contact.getPhoneNumber(), null, message, null, null);
-                        }
-                    }
 
-                    else
-                        throw new Exception();
-                    }
-
-                catch(Exception e) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.empty_contact_list), Toast.LENGTH_SHORT).show();
-                    Intent dialIntent = new Intent(Intent.ACTION_DIAL);
-                    dialIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    dialIntent.setData(Uri.parse("tel:" + getString(R.string.emergency_services)));
-                    startActivity(dialIntent);
-
+                if (tracking_switch == true) {
+                    //TODO: code here
                 }
-              // else just send once
 
+                else {
+                    try {
+                        if (!contactList.isEmpty()) {
+                            sendSMS();
+                        } else
+                            throw new Exception();
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.empty_contact_list), Toast.LENGTH_SHORT).show();
+                        Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+                        dialIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        dialIntent.setData(Uri.parse("tel:" + getString(R.string.emergency_services)));
+                        startActivity(dialIntent);
+
+                    }
+                }
                 timer.cancel();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             timer.cancel();
             timer.purge();
 
@@ -256,7 +252,18 @@ public class TimerService extends Service implements LocationListener {
     }
 
 
-
+    public void sendSMS() {
+        SmsManager smsManager = SmsManager.getDefault();
+        Toast.makeText(getApplicationContext(), getString(R.string.sms_sent), Toast.LENGTH_LONG).show();
+        for (Contact contact : contactList) {
+            StringBuilder sms_content = new StringBuilder(getString(R.string.safe_hold_alert));
+            String message = getString(R.string.sms_content) + " " + getString(R.string.map_link) + getLatitude() + "," + getLongitude();
+            sms_content.append(" " + contact.getName());
+            sms_content.append(message);
+            smsManager.sendTextMessage(contact.getPhoneNumber(), null, sms_content.toString(), null, null);
+            Log.d("Contact", "Service: " + contact.getPhoneNumber());
+        }
+    }
 
 
     @Override
@@ -266,24 +273,24 @@ public class TimerService extends Service implements LocationListener {
 
         //TODO: cancel Live timer for SMS here
 
-        Log.e("Service finish","Finish");
+        Log.e("Service finish", "Finish");
     }
 
-    private void fn_update(String str_time){
+    private void fn_update(String str_time) {
 
-        intent.putExtra("safehold_timer_time",str_time);
+        intent.putExtra("safehold_timer_time", str_time);
         sendBroadcast(intent);
     }
 
 
-    public List<Contact> getContacts(List<Long> cIds){
+    public List<Contact> getContacts(List<Long> cIds) {
         List<Contact> contacts = new ArrayList<>();
 
-        for(long id: cIds){
-            Cursor contactLookupCursor =  queryPhoneNumbers(id);
+        for (long id : cIds) {
+            Cursor contactLookupCursor = queryPhoneNumbers(id);
 
-            try{
-                if (contactLookupCursor.getCount()>0){
+            try {
+                if (contactLookupCursor.getCount() > 0) {
                     //contactLookupCursor.moveToFirst();
                     contacts.add(new Contact(
                             id,
@@ -291,10 +298,10 @@ public class TimerService extends Service implements LocationListener {
                             contactLookupCursor.getString(contactLookupCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
                     ));
 
+                } else {
+                    Log.wtf("EXECPTION", "Something went wrong!");
                 }
-                else{
-                    Log.wtf("EXECPTION","Something went wrong!");
-                }}catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -322,3 +329,5 @@ public class TimerService extends Service implements LocationListener {
         return null;
     }
 }
+
+
