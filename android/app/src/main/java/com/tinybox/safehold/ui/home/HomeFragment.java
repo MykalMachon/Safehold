@@ -37,6 +37,7 @@ import com.tinybox.safehold.R;
 import com.tinybox.safehold.TimerService;
 import com.tinybox.safehold.receivers.DeviceAdmin;
 import com.tinybox.safehold.ui.map.PermissionUtils;
+import com.tinybox.safehold.ui.survey.SurveyActivity;
 
 import org.w3c.dom.Text;
 
@@ -51,6 +52,7 @@ public class HomeFragment extends Fragment {
     DevicePolicyManager deviceManger;
     private boolean isTimerRunning;
     private TextView timerTv;
+    private Context c;
 
 
     private String date_time;
@@ -82,6 +84,8 @@ public class HomeFragment extends Fragment {
         checkPermissions();
         setOnClickListenersForPermissionsScreen();
         timerTv=(TextView) root.findViewById(R.id.tvTimer);
+
+        c = this.getContext();
 
 
         mpref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
@@ -130,6 +134,9 @@ public class HomeFragment extends Fragment {
                             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                             Intent intent_service = new Intent(getActivity().getApplicationContext(), TimerService.class);
                             getActivity().startService(intent_service);
+                        } else {
+                            Intent surveyIntent = new Intent(c, SurveyActivity.class);
+                            startActivityForResult(surveyIntent, 1);
                         }
                         return true; // if you want to handle the touch event
                 }
@@ -224,14 +231,9 @@ public class HomeFragment extends Fragment {
             fragmentView.findViewById(R.id.bvGrantLockPermission).setVisibility(View.VISIBLE);
         }
 
-
-
-
-
         if(results[2]==false){
             atleastOnePermissionNotGranted = true;
         }
-
 
         if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
             results[3] = true;

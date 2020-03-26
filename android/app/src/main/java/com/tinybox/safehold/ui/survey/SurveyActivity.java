@@ -4,8 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import com.tinybox.safehold.R;
 
@@ -31,6 +43,43 @@ public class SurveyActivity extends AppCompatActivity {
     Spinner qThreeSpinner = (Spinner) findViewById(R.id.Survey_AnswerThree);
     ArrayAdapter<CharSequence> qThreeAdapter = ArrayAdapter.createFromResource(this, R.array.survey_question_three_options, android.R.layout.simple_spinner_dropdown_item);
     qThreeSpinner.setAdapter(qThreeAdapter);
+
+    // Add Click Listener to the Button
+    Button sendSurveyButton = (Button) findViewById(R.id.send_survey);
+    sendSurveyButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        sendFormDataPost();
+        Toast toast=Toast.makeText(getApplicationContext(),"Survey Sent! Thank you 😊",Toast.LENGTH_SHORT);
+        toast.show();
+        onBackPressed();
+      }
+    });
+  }
+
+  private void sendFormDataPost(){
+    TextView questionOne = (TextView) findViewById(R.id.Survey_AnswerOne);
+    Spinner questionTwo = (Spinner) findViewById(R.id.Survey_AnswerTwo);
+    Spinner questionThree = (Spinner) findViewById(R.id.Survey_AnswerThree);
+
+    RequestQueue queue = Volley.newRequestQueue(this);
+    String url ="https://v2-api.sheety.co/mykal/seattleItinerary/locations";
+
+// Request a string response from the provided URL.
+    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+            new Response.Listener<String>() {
+              @Override
+              public void onResponse(String response) {
+                Log.d("Survey", "Response is: "+ response.substring(0,250));
+              }
+            }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+              Log.d("error", "Survey request did not work!");
+            }
+    });
+
+    queue.add(stringRequest);
   }
 
   public boolean onSupportNavigateUp() {
