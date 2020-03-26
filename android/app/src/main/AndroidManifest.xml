@@ -21,6 +21,11 @@
             android:exported="true"></service>
 
         <activity
+            android:name=".ui.survey.SurveyActivity"
+            android:label="Survey"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity
             android:name=".ui.account.emergency_contact_preference.EmergencyContactsActivity"
             android:label="@string/title_activity_emergency_contacts"
             android:theme="@style/AppTheme.NoActionBar" />
