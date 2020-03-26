@@ -30,6 +30,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.tinybox.safehold.R;
 import com.tinybox.safehold.TimerService;
 import com.tinybox.safehold.receivers.DeviceAdmin;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -100,10 +101,11 @@ public class HomeFragment extends Fragment {
                         else{
                             Intent intent = new Intent(getActivity().getApplicationContext(),TimerService.class);
                             getActivity().stopService(intent);
-
                             holdButton.setText("HOLD");
                             timerTv.setText("00:00:00");
                             holdButton.setTextColor(getResources().getColor(R.color.colorAccent));
+                            //Cancel Live Location timer
+                            TimerService.timer1.cancel();
                         }
                         isTimerRunning=!isTimerRunning;
                         return true; // if you want to handle the touch event
@@ -284,5 +286,12 @@ public class HomeFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter(TimerService.str_receiver));
+
     }
 }

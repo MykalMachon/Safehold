@@ -1,7 +1,10 @@
 package com.tinybox.safehold;
 
 import android.Manifest;
-import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -13,6 +16,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -22,7 +26,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -48,26 +52,24 @@ public class TimerService extends Service {
     public static String str_receiver = "com.tinybox.receiver";
 
 
-    private Handler mHandler = new Handler();
+    private Handler mHandler;
     Calendar calendar;
     SimpleDateFormat simpleDateFormat;
     String strDate;
     Date date_current, date_diff;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor sharedPrefEditor;
-    LocationManager locationManager;
+    private LocationManager locationManager;
     private LocationListener locationListener;
-    private boolean mPermissionDenied = false;
     private Timer timer = null;
+    public static Timer timer1 = null;
     public static final long NOTIFY_INTERVAL = 1000;
+    public static final long NOTIFY_LIVE_TRACKER = 1000 * 60;
     Intent intent;
-    HomeFragment homeFragment = null;
 
     private double latitude;
     private double longitude;
-
-    private final long startTime = 30 * 1000; //it is 30 second change it for your own requirement
-    private final long interval = 1 * 1000; // 1 second interval
+    boolean tracking_switch;
 
     List<Long> contactIDs;
     private List<Contact> contactList;
@@ -93,26 +95,59 @@ public class TimerService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+    public static final String CHANNEL_ID = "ForegroundServiceChannel";
+
+    //// code for this method was derived from https://androidwave.com/foreground-service-android-example/
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        enableMyLocation();
+        createNotificationChannel();
+        Intent notificationIntent = new Intent(this, HomeFragment.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("SafeHold is running")
+                .setContentText("Your location is shared to your emergency contact")
+                .setSmallIcon(R.drawable.ic_my_location_white_24dp)
+                .setContentIntent(pendingIntent)
+                .build();
+        startForeground(1, notification);
+
+        return START_STICKY;
+    }
+
+    //// code for this method was derived from https://androidwave.com/foreground-service-android-example/
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Foreground Service Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(serviceChannel);
+        }
+    }
+
 
     @Override
     public void onCreate() {
         super.onCreate();
-
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         sharedPrefEditor = sharedPreferences.edit();
         calendar = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 5, NOTIFY_INTERVAL);
+        mHandler = new Handler();
+        timer1 = new Timer();
         intent = new Intent(str_receiver);
-        enableMyLocation();
+
         contactDataHandler = new EmergencyContactDataHandler(getApplication());
         contactIDs = contactDataHandler.getContactIDs();
         this.contactList = getContacts(contactIDs);
 
     }
-
     /**
      * Enables the My Location layer if the fine location permission has been granted.
      */
@@ -151,13 +186,8 @@ public class TimerService extends Service {
                 }
             };
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
         }
     }
-
-
-
-
 
     class TimeDisplayTimerTask extends TimerTask {
 
@@ -176,6 +206,22 @@ public class TimerService extends Service {
 
                 }
 
+            });
+        }
+
+    }
+
+    class LiveTracker extends TimerTask {
+        LiveTracker() {
+
+        }
+
+        public void run() {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  sendSMS();
+                }
             });
         }
 
@@ -201,7 +247,6 @@ public class TimerService extends Service {
 
             long diff = date_current.getTime() - date_diff.getTime();
             int int_hours = Integer.valueOf(sharedPreferences.getInt("config_lock_timeout", 30));
-            boolean tracking_switch = sharedPreferences.getBoolean("config_resend_alert", false);
 
 
             long int_timer = TimeUnit.SECONDS.toMillis(int_hours);
@@ -226,24 +271,34 @@ public class TimerService extends Service {
                 Log.wtf("End", "SMS sent");
 
                 // Check if live location is ON if it is ON then send SMS using a timer every minute
-
+                tracking_switch = sharedPreferences.getBoolean("config_resend_alert", false);
                 if (tracking_switch == true) {
-                    //TODO: code here
+                    try {
+                        if (!contactList.isEmpty()) {
+                            timer1.scheduleAtFixedRate(new LiveTracker(), 0, NOTIFY_LIVE_TRACKER);
+                        }
+                        Toast.makeText(getApplicationContext(), getString(R.string.sms_sent), Toast.LENGTH_LONG).show();
+
+
+                    }
+
+                    catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.empty_contact_list), Toast.LENGTH_SHORT).show();
+                        dialEmergencyServices();
+                        timer1.cancel();
+                    }
                 }
 
                 else {
                     try {
                         if (!contactList.isEmpty()) {
                             sendSMS();
+                            Toast.makeText(getApplicationContext(), getString(R.string.sms_sent), Toast.LENGTH_LONG).show();
                         } else
                             throw new Exception();
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), getString(R.string.empty_contact_list), Toast.LENGTH_SHORT).show();
-                        Intent dialIntent = new Intent(Intent.ACTION_DIAL);
-                        dialIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        dialIntent.setData(Uri.parse("tel:" + getString(R.string.emergency_services)));
-                        startActivity(dialIntent);
-
+                        dialEmergencyServices();
                     }
                 }
                 timer.cancel();
@@ -262,7 +317,6 @@ public class TimerService extends Service {
 
     public void sendSMS() {
         SmsManager smsManager = SmsManager.getDefault();
-        Toast.makeText(getApplicationContext(), getString(R.string.sms_sent), Toast.LENGTH_LONG).show();
         for (Contact contact : contactList) {
             StringBuilder sms_content = new StringBuilder(getString(R.string.safe_hold_alert));
             String message = getString(R.string.sms_content) + " " + getString(R.string.map_link) + getLatitude() + "," + getLongitude();
@@ -273,16 +327,20 @@ public class TimerService extends Service {
         }
     }
 
+    public void dialEmergencyServices() {
+        Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+        dialIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        dialIntent.setData(Uri.parse("tel:" + getString(R.string.emergency_services)));
+        startActivity(dialIntent);
+    }
+
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         timer.cancel();
-
-        //TODO: cancel Live timer for SMS here
-        //Turn off live location
         locationManager.removeUpdates(locationListener);
-
+        stopSelf();
         Log.e("Service finish", "Finish");
     }
 
