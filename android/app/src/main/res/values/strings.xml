@@ -12,6 +12,17 @@
     <string name="permission_required_toast">Location permission is required for SafeHold.</string>
     <string name="title_activity_emergency_contacts">EmergencyContacts</string>
 
+    <!--   Resources for the Survey Page   -->
+    <string-array name="survey_question_two_options">
+        <item>Yes</item>
+        <item>No</item>
+        <item>Prefer not to answer</item>
+    </string-array>
+
+    <string-array name="survey_question_three_options">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
