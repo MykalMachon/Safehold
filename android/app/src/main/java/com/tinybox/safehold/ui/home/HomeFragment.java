@@ -2,7 +2,6 @@ package com.tinybox.safehold.ui.home;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -18,27 +17,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.preference.AndroidResources;
 
 import com.tinybox.safehold.R;
 import com.tinybox.safehold.TimerService;
 import com.tinybox.safehold.receivers.DeviceAdmin;
-import com.tinybox.safehold.ui.map.PermissionUtils;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -110,10 +101,11 @@ public class HomeFragment extends Fragment {
                         else{
                             Intent intent = new Intent(getActivity().getApplicationContext(),TimerService.class);
                             getActivity().stopService(intent);
-
                             holdButton.setText("HOLD");
                             timerTv.setText("00:00:00");
                             holdButton.setTextColor(getResources().getColor(R.color.colorAccent));
+                            //Cancel Live Location timer
+                            TimerService.timer1.cancel();
                         }
                         isTimerRunning=!isTimerRunning;
                         return true; // if you want to handle the touch event
@@ -125,7 +117,6 @@ public class HomeFragment extends Fragment {
                             calendar = Calendar.getInstance();
                             simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
                             date_time = simpleDateFormat.format(calendar.getTime());
-
                             mEditor.putString("date_time", date_time).commit();
                             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                             Intent intent_service = new Intent(getActivity().getApplicationContext(), TimerService.class);
@@ -295,5 +286,12 @@ public class HomeFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter(TimerService.str_receiver));
+
     }
 }
