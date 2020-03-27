@@ -110,14 +110,14 @@ public class HomeFragment extends Fragment {
                             holdButton.setTextColor(getResources().getColor(R.color.colorAccent));
                             //Cancel Live Location timer
                             TimerService.timer1.cancel();
+                            Intent surveyIntent = new Intent(c, SurveyActivity.class);
+                            startActivityForResult(surveyIntent, 1);
                         }
                         isTimerRunning=!isTimerRunning;
                         return true; // if you want to handle the touch event
                     case MotionEvent.ACTION_UP:
                         if(isTimerRunning){
                             deviceManger.lockNow();
-
-
                             calendar = Calendar.getInstance();
                             simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
                             date_time = simpleDateFormat.format(calendar.getTime());
