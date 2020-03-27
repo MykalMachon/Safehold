@@ -75,7 +75,7 @@ public class HomeFragment extends Fragment {
 
         checkPermissions();
         setOnClickListenersForPermissionsScreen();
-        timerTv=(TextView) root.findViewById(R.id.tvTimer);
+        timerTv= root.findViewById(R.id.tvTimer);
 
         c = this.getContext();
 
@@ -92,7 +92,7 @@ public class HomeFragment extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     public void setOnClickListenerForSafeHoldButton(){
-        final Button holdButton = (Button) getView().findViewById(R.id.hold_button);
+        final Button holdButton = getView().findViewById(R.id.hold_button);
         holdButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -100,12 +100,14 @@ public class HomeFragment extends Fragment {
                     case MotionEvent.ACTION_DOWN:
                         if(!isTimerRunning){
                             holdButton.setText("ABORT");
+                            timerTv.setVisibility(View.VISIBLE);
                             holdButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
                         }
                         else{
                             Intent intent = new Intent(getActivity().getApplicationContext(),TimerService.class);
                             getActivity().stopService(intent);
                             holdButton.setText("HOLD");
+                            timerTv.setVisibility(View.INVISIBLE);
                             timerTv.setText("00:00:00");
                             holdButton.setTextColor(getResources().getColor(R.color.colorAccent));
                             //Cancel Live Location timer

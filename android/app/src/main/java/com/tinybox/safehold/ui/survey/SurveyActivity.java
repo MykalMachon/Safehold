@@ -1,14 +1,5 @@
 package com.tinybox.safehold.ui.survey;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-
-import com.tinybox.safehold.R;
-
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;

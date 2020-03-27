@@ -56,7 +56,7 @@ public class EmergencyContactsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Emergency Contact List");
         contactDataHandler = new EmergencyContactDataHandler(this);
 
-        recyclerView=(RecyclerView)findViewById(R.id.emergency_contact_recycler);
+        recyclerView= findViewById(R.id.emergency_contact_recycler);
         contactIDs = contactDataHandler.getContactIDs();
         contactList=getContacts(contactIDs);
 

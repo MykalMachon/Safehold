@@ -24,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -107,7 +108,7 @@ public class TimerService extends Service {
                 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("SafeHold is running")
-                .setContentText("Your location is shared to your emergency contact")
+                .setContentText("Your location will be shared with your contacts soon.")
                 .setSmallIcon(R.drawable.ic_my_location_white_24dp)
                 .setContentIntent(pendingIntent)
                 .build();
@@ -325,6 +326,7 @@ public class TimerService extends Service {
             smsManager.sendTextMessage(contact.getPhoneNumber(), null, sms_content.toString(), null, null);
             Log.d("Contact", "Service: " + contact.getPhoneNumber());
         }
+
     }
 
     public void dialEmergencyServices() {
