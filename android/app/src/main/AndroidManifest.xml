@@ -7,9 +7,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-    <uses-permission android:name="android.permission.READ_SMS"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -19,17 +19,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.FeedbackActivity"></activity>
+
         <service
             android:name=".TimerService"
-            android:launchMode="singleTop"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"
+            android:launchMode="singleTop" />
 
         <activity
             android:name=".ui.survey.SurveyActivity"
             android:label="Survey"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.account.emergency_contact_preference.EmergencyContactsActivity"
             android:label="@string/title_activity_emergency_contacts"
