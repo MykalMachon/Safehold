@@ -19,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.FeedbackActivity"></activity>
+        <activity android:name=".ui.AboutActivity"></activity>
+        <activity android:name=".ui.FeedbackActivity" />
 
         <service
             android:name=".TimerService"

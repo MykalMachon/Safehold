@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.AboutActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/about_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/app_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:text="This application was developed as a final project for for COMP 370: Software Engineering at the University of The Fraser Valley."
+            android:textColor="@color/gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:id="@+id/developers_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.2"
+                android:text="APPLICATION DEVELOPERS"
+                android:textColor="@color/colorAccent"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:id="@+id/as_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Arshdeep Sekhon"
+                android:textSize="18dp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/as_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Core contributor and application developer"
+
+                android:textColor="@color/gray" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:id="@+id/ab_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Alan Bittner"
+                android:textSize="18dp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/ab_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Core contributor and application developer"
+
+                android:textColor="@color/gray" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:id="@+id/hl_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hieu Le"
+                android:textSize="18dp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/hl_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Core contributor and application developer"
+
+                android:textColor="@color/gray" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:id="@+id/mm_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mykal Machon"
+                android:textSize="18dp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/mm_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Core contributor and application developer"
+
+                android:textColor="@color/gray" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:id="@+id/developers_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.2"
+                android:text="SPECIAL THANKS TO"
+                android:textColor="@color/colorAccent"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:id="@+id/hp_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Holden Pimentel"
+                android:textSize="18dp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/hp_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Advisor who assisted app development"
+                android:textColor="@color/gray" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:id="@+id/op_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Opeyemi Adesina"
+                android:textSize="18dp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/op_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="UFV Professor who facilitated app development"
+                android:textColor="@color/gray" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
