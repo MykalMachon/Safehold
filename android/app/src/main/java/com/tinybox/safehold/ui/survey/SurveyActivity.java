@@ -10,25 +10,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.tinybox.safehold.R;
+import com.tinybox.safehold.utility.FormActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
 
-public class SurveyActivity extends AppCompatActivity {
+public class SurveyActivity extends FormActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +35,6 @@ public class SurveyActivity extends AppCompatActivity {
     getSupportActionBar().setTitle("Mind Sharing What Happened?");
 
     // Set the spinner for question 2
-
     Spinner qTwoSpinner = findViewById(R.id.Survey_AnswerTwo);
     ArrayAdapter<CharSequence> qTwoAdapter = ArrayAdapter.createFromResource(this, R.array.survey_question_two_options, android.R.layout.simple_spinner_dropdown_item);
     qTwoSpinner.setAdapter(qTwoAdapter);
@@ -57,31 +49,24 @@ public class SurveyActivity extends AppCompatActivity {
     sendSurveyButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        sendFormDataPost();
+        JSONObject data = createJsonObject();
+        POSTFormToServer(data, "https://v2-api.sheety.co/mykal/safeholdApi/survey");
         onBackPressed();
       }
     });
   }
 
-  private void sendFormDataPost(){
-    MultiAutoCompleteTextView questionOne = findViewById(R.id.Survey_AnswerOne);
-    Spinner questionTwo = findViewById(R.id.Survey_AnswerTwo);
-    Spinner questionThree = findViewById(R.id.Survey_AnswerThree);
-
-    RequestQueue queue = Volley.newRequestQueue(this);
-    String url ="https://v2-api.sheety.co/mykal/safeholdApi/survey";
-
+  private JSONObject createJsonObject() {
+    JSONObject rootJson = new JSONObject();
+    JSONObject requestJson = new JSONObject();
     try{
-      JSONObject rootJson = new JSONObject();
-      JSONObject requestJson = new JSONObject();
-
-      Context c = getApplicationContext();
-
+      MultiAutoCompleteTextView questionOne = findViewById(R.id.Survey_AnswerOne);
+      Spinner questionTwo = findViewById(R.id.Survey_AnswerTwo);
+      Spinner questionThree = findViewById(R.id.Survey_AnswerThree);
       LocationManager lm = (LocationManager)getSystemService(LOCATION_SERVICE);
       Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
       double longitude = location.getLongitude();
       double latitude = location.getLatitude();
-
       requestJson.put("createTime", new Date().toString());
       requestJson.put("reasonForEvent", questionOne.getText());
       requestJson.put("areYouSafe", questionTwo.getSelectedItem().toString());
@@ -91,31 +76,10 @@ public class SurveyActivity extends AppCompatActivity {
         requestJson.put("long", longitude);
       }
       rootJson.put("survey", requestJson);
-      JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, rootJson,
-              new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                  Log.d("Verbose", "Survey Post Worked " + response.toString());
-                  Toast toast=Toast.makeText(getApplicationContext(),"Survey Sent! Thank you 😊",Toast.LENGTH_SHORT);
-                  toast.show();
-                }
-              },
-              new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                  Toast toast=Toast.makeText(getApplicationContext(),"Survey failed to send 😢",Toast.LENGTH_SHORT);
-                  toast.show();
-                  Log.d("Error", "Survey Post Broke");
-                  Log.d("Error", "Survey Post error " + error.toString());
-                }
-              }
-      ){
-        // test
-      };
-      queue.add(jsonRequest);
     }catch(JSONException e){
-      Log.d("Error", "Json Exception in sending POST request");
+      Log.d("Error", "JSON Exception in creating form data");
     }
+    return rootJson;
   }
 
   public boolean onSupportNavigateUp() {

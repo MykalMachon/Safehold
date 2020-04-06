@@ -2,7 +2,6 @@ package com.tinybox.safehold.ui.account;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,6 +11,8 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.tinybox.safehold.R;
+import com.tinybox.safehold.ui.AboutActivity;
+import com.tinybox.safehold.ui.FeedbackActivity;
 import com.tinybox.safehold.ui.account.emergency_contact_preference.EmergencyContactsActivity;
 
 public class PreferencesSubFragment extends PreferenceFragmentCompat  {
@@ -54,10 +55,7 @@ public class PreferencesSubFragment extends PreferenceFragmentCompat  {
         findPreference("feedback").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                String url = "https://tinybox.dev/";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-
+                Intent i = new Intent(c, FeedbackActivity.class);
                 startActivity(i);
                 return true;
             }
@@ -65,11 +63,7 @@ public class PreferencesSubFragment extends PreferenceFragmentCompat  {
         findPreference("about").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                //TODO: Replace the URLs with the required
-                String url = "https://tinybox.dev/";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-
+                Intent i = new Intent(c, AboutActivity.class);
                 startActivity(i);
                 return true;
             }
