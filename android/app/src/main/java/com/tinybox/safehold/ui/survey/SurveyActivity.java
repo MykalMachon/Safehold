@@ -27,8 +27,8 @@ import java.util.Date;
 
 public class SurveyActivity extends FormActivity {
   private static final int LOCATION_PERMISSION_REQUEST_CODE = 11;
-  double longitude;
-  double latitude;
+  private double longitude;
+  private double latitude;
 
 
   @Override
@@ -77,10 +77,11 @@ public class SurveyActivity extends FormActivity {
         PermissionUtils.requestPermission((FragmentActivity) getApplicationContext(), LOCATION_PERMISSION_REQUEST_CODE,
                 Manifest.permission.ACCESS_FINE_LOCATION, true);
       }
-
-      Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-      longitude = location.getLongitude();
-      latitude = location.getLatitude();
+      else {
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        longitude = location.getLongitude();
+        latitude = location.getLatitude();
+      }
       requestJson.put("createTime", new Date().toString());
       requestJson.put("reasonForEvent", questionOne.getText());
       requestJson.put("areYouSafe", questionTwo.getSelectedItem().toString());
