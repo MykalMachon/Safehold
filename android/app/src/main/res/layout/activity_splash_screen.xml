@@ -17,7 +17,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         android:gravity="center_horizontal"
-        android:text="TinyBox Co."
+        android:text="TinyBox.dev"
         android:textColor="#FFFFFF"
         android:textSize="12dp" />
 
