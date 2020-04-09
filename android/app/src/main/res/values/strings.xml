@@ -34,4 +34,7 @@
     <string name="sms_content">, I need your help and don\'t feel safe now. Please find me at </string>
     <string name="sms_sent">Your location has been sent to your Emergency Contacts</string>
     <string name="empty_contact_list">No Emergency Contacts set. Dial 911!</string>
+    <string name="tinybox_dev">TinyBox.dev - Copyright 2020</string>
+    <string name="splash_title">SafeHold</string>
+    <string name="website">TODO</string>
 </resources>

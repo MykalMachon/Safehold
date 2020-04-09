@@ -9,7 +9,8 @@
         android:layout_width="122dp"
         android:layout_height="115dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/ic_tinybox_logo" />
+        android:src="@drawable/ic_tinybox_logo"
+        android:contentDescription="@string/website" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -17,18 +18,19 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         android:gravity="center_horizontal"
-        android:text="TinyBox.dev"
+        android:text="@string/tinybox_dev"
         android:textColor="#FFFFFF"
         android:textSize="12dp" />
 
     <TextView
-        android:id="@+id/textView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/logo"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="250dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginBottom="215dp"
         android:gravity="center_horizontal"
-        android:text="SafeHold"
+        android:text="@string/splash_title"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
         android:textStyle="bold" />
