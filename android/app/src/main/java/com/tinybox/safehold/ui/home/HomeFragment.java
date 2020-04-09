@@ -45,8 +45,6 @@ public class HomeFragment extends Fragment {
     private boolean isTimerRunning;
     private TextView timerTv;
     private Context c;
-
-
     private String date_time;
     private Calendar calendar;
     private SimpleDateFormat simpleDateFormat;

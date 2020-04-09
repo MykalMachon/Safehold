@@ -9,4 +9,8 @@
     <color name="border_color">#2C2C2C</color>
     <color name="selection_bg_color">#0995B1</color>
     <color name="colorGreenAccent">#7CB342</color>
+
+    <color name="azureColorAccent">#000000</color>
+    <color name="azureColorPrimary">#009BFA</color>
+    <color name="azureColorPrimaryDark">#008EF8</color>  
 </resources>
