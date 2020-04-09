@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.account.emergency_contact_preference.EmergencyContactsActivity"
+    tools:context="dev.tinybox.safehold.ui.account.emergency_contact_preference.EmergencyContactsActivity"
     tools:showIn="@layout/activity_emergency_contacts">
 
     <androidx.recyclerview.widget.RecyclerView

@@ -19,7 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashScreen"
+        <activity android:name="dev.tinybox.safehold.SplashScreen"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,25 +27,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.AboutActivity" />
-        <activity android:name=".ui.FeedbackActivity" />
+        <activity android:name="dev.tinybox.safehold.ui.AboutActivity" />
+        <activity android:name="dev.tinybox.safehold.ui.FeedbackActivity" />
 
         <service
-            android:name=".TimerService"
+            android:name="dev.tinybox.safehold.TimerService"
             android:enabled="true"
             android:exported="true"
             android:launchMode="singleTop" />
 
         <activity
-            android:name=".ui.survey.SurveyActivity"
+            android:name="dev.tinybox.safehold.ui.survey.SurveyActivity"
             android:label="Survey"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.account.emergency_contact_preference.EmergencyContactsActivity"
+            android:name="dev.tinybox.safehold.ui.account.emergency_contact_preference.EmergencyContactsActivity"
             android:label="@string/title_activity_emergency_contacts"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name="dev.tinybox.safehold.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -56,7 +56,7 @@
         </activity>
 
         <receiver
-            android:name=".receivers.DeviceAdmin"
+            android:name="dev.tinybox.safehold.receivers.DeviceAdmin"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data

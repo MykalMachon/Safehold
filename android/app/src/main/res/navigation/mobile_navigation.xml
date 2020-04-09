@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.tinybox.safehold.ui.home.HomeFragment"
+        android:name="dev.tinybox.safehold.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_map"
-        android:name="com.tinybox.safehold.ui.map.MapFragment"
+        android:name="dev.tinybox.safehold.ui.map.MapFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/navigation_account"
-        android:name="com.tinybox.safehold.ui.account.SettingsFragment"
+        android:name="dev.tinybox.safehold.ui.account.SettingsFragment"
         android:label="@string/navigation_label_manage"
         tools:layout="@layout/fragment_settings" />
 </navigation>
