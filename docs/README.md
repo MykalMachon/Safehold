@@ -1,3 +1,7 @@
+> This project is now archived ⚠️
+>
+> The project is not actively maintained. Additionally, the functionality we envisioned as part of this project is built into android OS via [the Personal Safety app](https://play.google.com/store/apps/details?id=com.google.android.apps.safetyhub&hl=en_CA&gl=US&pli=1).
+
 # Safehold 
 Safehold is a location based safety app built for COMP 370 at UFV.
 
